@@ -12,30 +12,28 @@ class App {
 
     public App() {
         accounts = new User[0];
-        users = new HashMap<String,User>();
+        users = new HashMap<>();
         personCount = 0;
     }
 
     public Boolean repeatedEmail(String emailToCheck) {
         boolean isRepeated = false;
-        if (personCount != 0) {
-            for (int i = 0; i < personCount; i++) {
-                if (accounts[i].getEmail().equals(emailToCheck)) {
-                    isRepeated = true;
-                }
+        for (String s : users.keySet()) {
+            if (s.equals(emailToCheck)) {
+                isRepeated = true;
+                break;
             }
         }
         return isRepeated;
     }
 
-    public Boolean createAccount(String email, String name, String password) {
+    public void createAccount(String email, String name, String password) {
     	if(accounts.length -2 <= personCount) {
     		accounts = increaseAccounts();
     	}
-        
+        users.put(email,new User(email,name,password));
         accounts[personCount] = new User(email, name, password);
         personCount++;
-        return true;
     }
 
     public User getPersonFromEmail(String emailToCheck) {
@@ -45,6 +43,7 @@ class App {
                 lPerson = accounts[i];
             }
         }
+
         return lPerson;
     }
 
@@ -52,7 +51,7 @@ class App {
         User[] bigAccounts = new User[accounts.length + 20];
         for (int i = 0; i < personCount; i++) {
             bigAccounts[i] = accounts[i];
-        } 
+        }
         return bigAccounts;
     }
 
@@ -79,7 +78,7 @@ class App {
             User key = accounts[i];
             int j = i-1;
             
-            while (j>=0 && accounts[j].getEmail().compareTo(key.getEmail())==1){ 
+            while (j>=0 && accounts[j].getEmail().compareTo(key.getEmail()) > 0){
                 accounts[j+1] = accounts[j]; 
                 j = j-1; 
             } 
