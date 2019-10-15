@@ -1,11 +1,18 @@
 //Referred to as CObj
 
-class Controller {
-    private Person[] accounts;
-    private int personCount;
+import java.util.HashMap;
+import java.util.Map;
 
-    public Controller() {
-        accounts = new Person[0];
+class App {
+    private User[] accounts;
+    private int personCount;
+    private Map<String,User> users;
+    private User currentUser;
+    private Map<String,Map<String,Itinerary>> itineraries;
+
+    public App() {
+        accounts = new User[0];
+        users = new HashMap<String,User>();
         personCount = 0;
     }
 
@@ -26,13 +33,13 @@ class Controller {
     		accounts = increaseAccounts();
     	}
         
-        accounts[personCount] = new Person(email, name, password);
+        accounts[personCount] = new User(email, name, password);
         personCount++;
         return true;
     }
 
-    public Person getPersonFromEmail(String emailToCheck) {
-        Person lPerson = null;
+    public User getPersonFromEmail(String emailToCheck) {
+        User lPerson = null;
         for (int i = 0; i < personCount; i++) {
             if (accounts[i].getEmail().equals(emailToCheck)) {
                 lPerson = accounts[i];
@@ -41,8 +48,8 @@ class Controller {
         return lPerson;
     }
 
-    private Person[] increaseAccounts() {
-        Person[] bigAccounts = new Person[accounts.length + 20];
+    private User[] increaseAccounts() {
+        User[] bigAccounts = new User[accounts.length + 20];
         for (int i = 0; i < personCount; i++) {
             bigAccounts[i] = accounts[i];
         } 
@@ -62,14 +69,14 @@ class Controller {
         return personCount;
     }
 
-    public Person getPersonFromIndex(int index) {
+    public User getPersonFromIndex(int index) {
         return accounts[index];
     }
 
     public void sortAccounts() {
         int len = personCount; 
         for (int i=1; i<len; ++i) { 
-            Person key = accounts[i]; 
+            User key = accounts[i];
             int j = i-1;
             
             while (j>=0 && accounts[j].getEmail().compareTo(key.getEmail())==1){ 

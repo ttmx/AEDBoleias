@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -23,13 +21,13 @@ class Main {
     public static void main(String[] args) {
     	
         Locale.setDefault(new Locale("en", "US"));
-        Controller CObj = new Controller();
+        App CObj = new App();
         Scanner scan = new Scanner(System.in);
         //Inicio do Programa
         mainMenu(scan, CObj);
     }
     //Estado de menu principal(sem sessao iniciada)
-    public static void mainMenu(Scanner scan, Controller CObj) {
+    public static void mainMenu(Scanner scan, App CObj) {
 
         String lCmd = "";
         //Enquanto o comando nao for termina
@@ -63,7 +61,7 @@ class Main {
     }
     //Estado de sessao iniciada
     //@param O objecto Person definido no login
-    public static void loggedIn(Person personObj, Scanner scan, Controller CObj) {
+    public static void loggedIn(User personObj, Scanner scan, App CObj) {
         String lCmd = "";
         //Enquanto que o comando nao for sai
         while (!lCmd.equals(LOGOFF)) {
@@ -127,7 +125,7 @@ class Main {
     }
     //Registo de uma conta
     //@param O objeto controlador 
-    private static void register(Scanner scan, Controller CObj) {
+    private static void register(Scanner scan, App CObj) {
         boolean lHasCreated = false;
         //Contador de passwords falhadas
         int lFailCount = 0;
@@ -187,11 +185,11 @@ class Main {
         System.out.println("remove - elimina uma dada deslocacao");
     }
 
-    private static void login(Scanner scan, Controller CObj) {
+    private static void login(Scanner scan, App CObj) {
         String lEmail = scan.next();
         scan.nextLine();
         String lPass = "";
-        Person lPerson = CObj.getPersonFromEmail(lEmail);
+        User lPerson = CObj.getPersonFromEmail(lEmail);
         boolean lLoggedIn = false;
         if (lPerson != null) {
             for (int i = 0; !lLoggedIn && i < 3; i++) {
@@ -215,17 +213,17 @@ class Main {
         System.out.println(BYEBYE);
     }
 
-    private static void getInfo(Scanner scan, Controller CObj) {
+    private static void getInfo(Scanner scan, App CObj) {
         String lEmail = scan.next().trim();
         int[] lDate = CObj.dateFromString(scan.next().trim());
-        Person lPerson = CObj.getPersonFromEmail(lEmail);
+        User lPerson = CObj.getPersonFromEmail(lEmail);
         CObj.sortAccounts();
         boolean hasFound = false;
         if (lPerson == null) {
             System.out.println(MOV_NOT_EXIST);
         } else {
             RideIterator lRI = lPerson.createRideIterator();
-            Ride lRide;
+            Itinerary lRide;
             if (lRI.hasNext()) {
                 do {
                     lRide = lRI.nextRide();
@@ -240,7 +238,7 @@ class Main {
         }
     }
 
-    private static void listRides(Scanner scan, Controller CObj, Person personObj) {
+    private static void listRides(Scanner scan, App CObj, User personObj) {
         String lDate = scan.nextLine().trim();
 
         int[] laDate;
@@ -253,7 +251,7 @@ class Main {
             lIterator.sort();
             if (lIterator.hasNext()) {
                 do {
-                    Ride lRide = lIterator.nextRide();
+                    Itinerary lRide = lIterator.nextRide();
                     printRideInfo(lRide, personObj, false, false);
                     System.out.print("\n");
                 } while (lIterator.hasNext());
@@ -263,9 +261,9 @@ class Main {
         }
     }
 
-    private static void listRidesWDate(int[] date, Controller CObj,Person personObj) {
+    private static void listRidesWDate(int[] date, App CObj, User personObj) {
         int lUserCount = CObj.getUserCount();
-        Person lPerson = null;
+        User lPerson = null;
         boolean hasFound = false;
         if(!personObj.isDateValid(date)) {
         	
@@ -278,7 +276,7 @@ class Main {
                 RideIterator lIterator = lPerson.createRideIterator();
                 lIterator.sort();
                 while (lIterator.hasNext()) {
-                    Ride lRide = lIterator.nextRide();
+                    Itinerary lRide = lIterator.nextRide();
                     if (date[0] == lRide.getDate()[0] && date[1] == lRide.getDate()[1] && date[2] == lRide.getDate()[2]) {
                         printRideInfo(lRide, lPerson, true, false);
                         System.out.print("\n");
@@ -293,7 +291,7 @@ class Main {
         }
     }
 
-    private static void removeRide(Scanner scan, Person pObj,Controller CObj) {
+    private static void removeRide(Scanner scan, User pObj, App CObj) {
         switch(pObj.removeRide(CObj.dateFromString(scan.next().trim()))){
             case 0:
                 System.out.println("Deslocacao removida.");
@@ -311,7 +309,7 @@ class Main {
         }
     }
 
-    private static void newRide(Person personObj, Scanner scan, Controller CObj) {
+    private static void newRide(User personObj, Scanner scan, App CObj) {
         scan.nextLine();
         String lOrigin = scan.nextLine();
 
@@ -345,10 +343,10 @@ class Main {
 
     }
 
-    private static void takeARide(Person pObj, Scanner scan, Controller CObj) {
+    private static void takeARide(User pObj, Scanner scan, App CObj) {
         String lEmail = scan.next().trim();
         int[] lDate = CObj.dateFromString(scan.next().trim());
-        Person lPerson = CObj.getPersonFromEmail(lEmail);
+        User lPerson = CObj.getPersonFromEmail(lEmail);
 
         if (!pObj.isDateValid(lDate)) {
             System.out.println("Data invalida.");
@@ -373,7 +371,7 @@ class Main {
         System.out.println(BYEBYE);
     }
 
-    private static void printRideInfo(Ride ride, Person person, boolean needDriver, boolean freeSpots) {
+    private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
         if (needDriver) {
             System.out.println(person.getEmail());
         }

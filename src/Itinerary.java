@@ -1,4 +1,4 @@
-class Ride {
+class Itinerary {
 
     private String destination;
     private String origin;
@@ -6,11 +6,11 @@ class Ride {
     private int hour;
     private float duration;
     private int seats;
-    private Person driver;
+    private User driver;
     private int emptySeats;
     private int dateAsNumber;
 
-    public Ride(String origin,String destination, int[] date,int hour, float duration, int seats) {
+    public Itinerary(String origin, String destination, int[] date, int hour, float duration, int seats) {
         this.origin = origin;
         this.destination = destination;
         this.date = date;
@@ -45,7 +45,7 @@ class Ride {
     	return emptySeats;
     }
 
-    public Person getDriver() {
+    public User getDriver() {
         return driver;
     }
     public int getDateNumber(){

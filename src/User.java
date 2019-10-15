@@ -1,19 +1,19 @@
 //Refered to as PObj
 
-class Person {
+class User {
     private String email;
     private String name;
     private String pw;
-    private Ride[] rides;
+    private Itinerary[] rides;
     private int rideCount;
-    public Person() {
+    public User() {
     	
     }
-    public Person(String email, String name, String pw) {
+    public User(String email, String name, String pw) {
         this.email= email;
         this.name = name;
         this.pw = pw;
-        rides = new Ride[0];
+        rides = new Itinerary[0];
         rideCount = 0;
     }
 
@@ -36,8 +36,8 @@ class Person {
     	RideIterator lIterator = new RideIterator(rides,rideCount);
     	return lIterator;
     }
-    public Ride getRideFromDate(int[] date){
-        Ride lRide = null;
+    public Itinerary getRideFromDate(int[] date){
+        Itinerary lRide = null;
         for(int i = 0; i < rideCount; i++){
             if(rides[i].getDate()[0] == date[0] && rides[i].getDate()[1] == date[1] && rides[i].getDate()[2] == date[2]){
                 lRide = rides[i];
@@ -46,8 +46,8 @@ class Person {
         return lRide;
     }
 
-    public Ride[] increaseRides() {
-        Ride[] bigRides = new Ride[rides.length + 2];
+    public Itinerary[] increaseRides() {
+        Itinerary[] bigRides = new Itinerary[rides.length + 2];
         for (int i = 0; i < rideCount; i++) {
             bigRides[i] = rides[i];
         }
@@ -63,7 +63,7 @@ class Person {
             lErrorCode = 2;
         } else {
             rides = increaseRides();
-            rides[rideCount] = new Ride(origin, destination, date, hour, duration, seats);
+            rides[rideCount] = new Itinerary(origin, destination, date, hour, duration, seats);
             rideCount++;
         }
         return lErrorCode;
@@ -74,7 +74,7 @@ class Person {
         RideIterator lRI = createRideIterator();
         lRI.sort();
         for (int i = 0; i < rideCount; i++) {
-        	Ride lRide = lRI.nextRide();
+        	Itinerary lRide = lRI.nextRide();
         	if(lRide == null) {
         		lCheck = false;
         	}else if (lRide.getDate()[0] == date[0] && lRide.getDate()[1] == date[1] && lRide.getDate()[2] == date[2]) {
