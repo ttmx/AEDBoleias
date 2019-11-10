@@ -1,43 +1,95 @@
-//Refered to as PObj
+package app;
 
-class User {
+import dataStructures.Iterator;
+import dataStructures.Map;
+import dataStructures.MapWithJavaClass;
+
+public class UserImp implements User {
     private String email;
     private String name;
-    private String pw;
-    private Itinerary[] rides;
-    private int rideCount;
-    public User() {
-    	
-    }
-    public User(String email, String name, String pw) {
+    private String password;
+    private int loginNumber;
+    private Map<String, Travel> travels;
+    private Map<String, Travel> rides;
+
+    public UserImp(String email, String name, String password) {
         this.email= email;
         this.name = name;
-        this.pw = pw;
-        rides = new Itinerary[0];
-        rideCount = 0;
+        this.password = password;
+        // TODO: Change the expected value from the maps
+        travels = new MapWithJavaClass<String, Travel>(0);
+        rides = new MapWithJavaClass<String, Travel>(0);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
-    public String getPw() {
-        return pw;
-    }
-    public int getRideCount() {
-    	return rideCount;
+    @Override
+    public String getPassword() {
+        return password;
     }
 
-    public RideIterator createRideIterator() {
-    	RideIterator lIterator = new RideIterator(rides,rideCount);
-    	return lIterator;
+    @Override
+    public int getLoginNumber() {
+        return loginNumber;
     }
-    public Itinerary getRideFromDate(int[] date){
-        Itinerary lRide = null;
+
+    @Override
+    public int getNumberOfTravels() {
+        return travels.size();
+    }
+
+    @Override
+    public Iterator getTravels() {
+        return travels.iterator();
+    }
+
+    @Override
+    public Iterator getRides() {
+        return rides.iterator();
+    }
+
+    @Override
+    public void incLoginNum() {
+        loginNumber++;
+    }
+
+    @Override
+    public void addTravel(Travel travel) {
+        travels.insert(travel.getDate(), travel);
+    }
+
+    @Override
+    public void delTravel(String date) {
+        travels.remove(date);
+    }
+
+    @Override
+    public void addRide(Travel travelToRide) {
+        rides.insert(travelToRide.getDate(), travelToRide);
+    }
+
+    @Override
+    public void delRide(String date) {
+        rides.remove(date);
+    }
+
+// Anything down right now is old trash.
+
+
+    /*public RideIterator createRideIterator() {
+        RideIterator lIterator = new RideIterator(rides,rideCount);
+        return lIterator;
+    }
+    public TravelImp getRideFromDate(int[] date){
+        TravelImp lRide = null;
         for(int i = 0; i < rideCount; i++){
             if(rides[i].getDate()[0] == date[0] && rides[i].getDate()[1] == date[1] && rides[i].getDate()[2] == date[2]){
                 lRide = rides[i];
@@ -46,8 +98,8 @@ class User {
         return lRide;
     }
 
-    public Itinerary[] increaseRides() {
-        Itinerary[] bigRides = new Itinerary[rides.length + 2];
+    public TravelImp[] increaseRides() {
+        TravelImp[] bigRides = new TravelImp[rides.length + 2];
         for (int i = 0; i < rideCount; i++) {
             bigRides[i] = rides[i];
         }
@@ -63,7 +115,7 @@ class User {
             lErrorCode = 2;
         } else {
             rides = increaseRides();
-            rides[rideCount] = new Itinerary(origin, destination, date, hour, duration, seats);
+            rides[rideCount] = new TravelImp(origin, destination, date, hour, duration, seats);
             rideCount++;
         }
         return lErrorCode;
@@ -74,10 +126,10 @@ class User {
         RideIterator lRI = createRideIterator();
         lRI.sort();
         for (int i = 0; i < rideCount; i++) {
-        	Itinerary lRide = lRI.nextRide();
-        	if(lRide == null) {
-        		lCheck = false;
-        	}else if (lRide.getDate()[0] == date[0] && lRide.getDate()[1] == date[1] && lRide.getDate()[2] == date[2]) {
+            TravelImp lRide = lRI.nextRide();
+            if(lRide == null) {
+                lCheck = false;
+            }else if (lRide.getDate()[0] == date[0] && lRide.getDate()[1] == date[1] && lRide.getDate()[2] == date[2]) {
                 lCheck = true;
             }
         }
@@ -92,7 +144,7 @@ class User {
         }else if(hasPassengers(IndexFromDate(date))){
             errorCode = 3;
         }
-        
+
         if(errorCode == 0){
             int index = IndexFromDate(date);
             rides[rideCount] = rides[index];
@@ -114,11 +166,11 @@ class User {
         return index;
     }
     private boolean hasPassengers(int index) {
-    	return ((rides[index].getEmptySeats() -rides[index].getSeats()) != 0);
+        return ((rides[index].getEmptySeats() -rides[index].getSeats()) != 0);
     }
 
     public boolean isDateValid(int[] date) {
-    	
+
         boolean niceDate = true;
         int febDays = 28;
         if ((2000 - date[2]) % 4 == 0)
@@ -130,7 +182,7 @@ class User {
         } else {
             niceDate = false;
         }
-        
+
         return niceDate;
-    }
+    }*/
 }

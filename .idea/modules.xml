@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FCTBoleias.iml" filepath="$PROJECT_DIR$/FCTBoleias.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AEDBoleias.iml" filepath="$PROJECT_DIR$/AEDBoleias.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,25 @@
+
+1) Temos de usar os TADs na mesma, a implementação é que usa Java.util, torna muito mais fácil mas dá mais trabalho,
+ñ sei como usar o nosso iterator para Set e Collection. I mean, saber sei mas queria ver contigo.
+Se calhar fazemos simplesmente uma classe SetIterator e CollectionIterator, not sure se podemos usar o ArrayIterator,
+visto que espera um vector.
+
+Nota: Após ter visto o Set e Collection ambos têem um ".toArray" method que devolve Object[] tornando isto muito mais
+simples e permite-nos usar o ArrayIterator. Ez CLAP
+
+2) Temos de configurar o tamanho esperado das HashTables e acrescentar parâmetros em alguns métodos.
+
+3) Portanto a maneira como vamos guardar as coisas é um das seguintes maneiras:
+Mapa: <K, V> a Key será uma data, ou seja, unique e o valor será uma coleção de viagens nesse dia, aqui temos de
+decidir que tipo será, dissemos Map mas tmeos de decidir o que será a Key, o valor será a Travel.
+Isto não precisa de ser super ponderador anymore porque:
+"Listar as minhas deslocaçõoes registadas" - Vamos ao próprio user
+"Listar as minhas boleias registadas" - Vamos ao próprio user again
+"Listar as deslocações registadas por um dado email" - Vamo ao user dado
+"Listar as deslocações numa dada data" - Pegamos no mapa que corresponder à Key da data dada
+"Listar todas as deslocações" - É ordenado pela data da deslocação e não pela entrada.
+ez clap
+
+4) Datas e horas de partida acho que devemos guardar em formato string e usar um parser na main como foi para o
+ContactBook o ano passado que verificavas se era tudo int (mas não guardavas em formato int pq o número era maior que
+o int aceita - dava em formato long mas manteve-se em string.

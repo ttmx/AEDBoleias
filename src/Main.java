@@ -1,3 +1,16 @@
+/*
+ * Project: FCT Boleias
+ * Description: Main project for Algorithms & Data Structures classes.
+ * Version:
+ * Copyright (C) 2019, Rodrigo Rosa <https://github.com/v0n3x> (Student ID: 56505)
+ * Copyright (C) 2019, Tiago Teles <https://github.com/ttmx> (Student ID: 54953)
+ * All rights reserved.
+ */
+
+import app.App;
+import app.AppImp;
+import app.UserImp;
+
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -21,13 +34,13 @@ class Main {
     public static void main(String[] args) {
     	
         Locale.setDefault(new Locale("en", "US"));
-        App CObj = new App();
+        App CObj = new AppImp();
         Scanner scan = new Scanner(System.in);
         //Inicio do Programa
-        mainMenu(scan, CObj);
+        //mainMenu(scan, CObj);
     }
     //Estado de menu principal(sem sessao iniciada)
-    public static void mainMenu(Scanner scan, App CObj) {
+  /*  public static void mainMenu(Scanner scan, App CObj) {
 
         String lCmd = "";
         //Enquanto o comando nao for termina
@@ -61,7 +74,7 @@ class Main {
     }
     //Estado de sessao iniciada
     //@param O objecto Person definido no login
-    public static void loggedIn(User personObj, Scanner scan, App CObj) {
+    public static void loggedIn(UserImp personObj, Scanner scan, App CObj) {
         String lCmd = "";
         //Enquanto que o comando nao for sai
         while (!lCmd.equals(LOGOFF)) {
@@ -189,7 +202,7 @@ class Main {
         String lEmail = scan.next();
         scan.nextLine();
         String lPass = "";
-        User lPerson = CObj.getPersonFromEmail(lEmail);
+        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
         boolean lLoggedIn = false;
         if (lPerson != null) {
             for (int i = 0; !lLoggedIn && i < 3; i++) {
@@ -216,7 +229,7 @@ class Main {
     private static void getInfo(Scanner scan, App CObj) {
         String lEmail = scan.next().trim();
         int[] lDate = CObj.dateFromString(scan.next().trim());
-        User lPerson = CObj.getPersonFromEmail(lEmail);
+        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
         CObj.sortAccounts();
         boolean hasFound = false;
         if (lPerson == null) {
@@ -238,7 +251,7 @@ class Main {
         }
     }
 
-    private static void listRides(Scanner scan, App CObj, User personObj) {
+    private static void listRides(Scanner scan, App CObj, UserImp personObj) {
         String lDate = scan.nextLine().trim();
 
         int[] laDate;
@@ -261,9 +274,9 @@ class Main {
         }
     }
 
-    private static void listRidesWDate(int[] date, App CObj, User personObj) {
+    private static void listRidesWDate(int[] date, App CObj, UserImp personObj) {
         int lUserCount = CObj.getUserCount();
-        User lPerson = null;
+        UserImp lPerson = null;
         boolean hasFound = false;
         if(!personObj.isDateValid(date)) {
         	
@@ -291,7 +304,7 @@ class Main {
         }
     }
 
-    private static void removeRide(Scanner scan, User pObj, App CObj) {
+    private static void removeRide(Scanner scan, UserImp pObj, App CObj) {
         switch(pObj.removeRide(CObj.dateFromString(scan.next().trim()))){
             case 0:
                 System.out.println("Deslocacao removida.");
@@ -309,7 +322,7 @@ class Main {
         }
     }
 
-    private static void newRide(User personObj, Scanner scan, App CObj) {
+    private static void newRide(UserImp personObj, Scanner scan, App CObj) {
         scan.nextLine();
         String lOrigin = scan.nextLine();
 
@@ -343,10 +356,10 @@ class Main {
 
     }
 
-    private static void takeARide(User pObj, Scanner scan, App CObj) {
+    private static void takeARide(UserImp pObj, Scanner scan, App CObj) {
         String lEmail = scan.next().trim();
         int[] lDate = CObj.dateFromString(scan.next().trim());
-        User lPerson = CObj.getPersonFromEmail(lEmail);
+        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
 
         if (!pObj.isDateValid(lDate)) {
             System.out.println("Data invalida.");
@@ -371,7 +384,7 @@ class Main {
         System.out.println(BYEBYE);
     }
 
-    private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
+    private static void printRideInfo(Itinerary ride, UserImp person, boolean needDriver, boolean freeSpots) {
         if (needDriver) {
             System.out.println(person.getEmail());
         }
@@ -386,6 +399,6 @@ class Main {
         } else {
             System.out.println("Lugares vagos: " + ride.getEmptySeats());
         }
-    }
+    }*/
 
 }
