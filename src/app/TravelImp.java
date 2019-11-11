@@ -89,7 +89,7 @@ public class TravelImp implements Travel {
         int index = usersForTravel.find(user);
         if(index==-1)
             throw new UserNotOnTravelException();
-        usersForTravel.remove();
+        usersForTravel.remove(index);
     }
 
     /*
