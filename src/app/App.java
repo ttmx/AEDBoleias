@@ -18,6 +18,4 @@ public interface App {
     void userExistsCheck(String email) throws UserIsNullException;
 
     User getUserWithPass(String email, String pass) throws WrongPasswordException;
-
-    void removeRide(String date)throws NoRideOnDateException, HasRidesException;
 }

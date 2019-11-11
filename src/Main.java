@@ -24,7 +24,8 @@ class Main {
     private static final String LISTRIDES = "lista";
     private static final String GETINFO = "consulta";
     private static final String TAKEARIDE = "boleia";
-    private static final String REMOVERIDE = "remove";
+    private static final String REMOVETRAVEL = "remove";
+    private static final String REMOVERIDE = "retira";
     private static final String BYEBYE = "Obrigado. Ate a proxima.";
     private static final String INV_COMMAND = "Comando invalido.";
     private static final String REG_SUCCESS = "Registo efetuado.";
@@ -97,9 +98,11 @@ class Main {
             case TAKEARIDE:
                 takeARide(user, scan, app);
                 break;
-            case REMOVERIDE:
-            	removeRide(scan, user,app);
+            case REMOVETRAVEL:
+            	removeTravel(scan, user,app);
                 break;
+            case REMOVERIDE:
+                removeRide(scan,user,app);
             case HELP:
                 printLoggedInHelp();
                 break;
@@ -112,6 +115,19 @@ class Main {
         }
 
     }
+
+    private static void removeRide(Scanner scan, User user, App app) {
+        String date = scan.next();
+        try {
+            app.delTravel(date);
+            System.out.println("Deslocacao removida.");
+        } catch (HasRidesException e){
+            System.out.println(user.name()+" ja nao pode eliminar esta deslocacao.");
+        } catch(NoTravelOnDateException e){
+            System.out.println(user.name() + " nesta data nao tem registo de deslocacao.");
+        }
+    }
+
     //Leitura e a formatacao do comando
     public static String readCommand(Scanner scan) {
         String lRead = "";
@@ -302,14 +318,14 @@ class Main {
         }
     }
 
-    private static void removeRide(Scanner scan, User pObj, App app) {
+    private static void removeTravel(Scanner scan, User pObj, App app) {
         String date = scan.next();
         try {
-            app.removeRide(date);
+            app.delTravel(date);
             System.out.println("Deslocacao removida.");
         } catch (HasRidesException e){
             System.out.println(pObj.name()+" ja nao pode eliminar esta deslocacao.");
-        } catch(NoRideOnDateException e){
+        } catch(NoTravelOnDateException e){
             System.out.println(pObj.name() + " nesta data nao tem registo de deslocacao.");
         }
 

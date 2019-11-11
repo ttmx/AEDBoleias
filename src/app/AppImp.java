@@ -116,15 +116,7 @@ public class AppImp implements App {
         return user;
     }
 
-    @Override
-    public void removeRide(String date) throws NoRideOnDateException, HasRidesException{
-        Travel inDate = currentUser.travelMap().find(date);
-        if(inDate == null)
-            throw new NoRideOnDateException();
-        if(inDate.getRideUsers().hasNext())
-            throw new HasRidesException(currentUser.name());
-        inDate.remove(date);
-    }
+
 
     /*    private UserImp[] accounts;
     private int personCount;
