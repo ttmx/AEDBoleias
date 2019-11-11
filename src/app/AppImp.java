@@ -85,7 +85,7 @@ public class AppImp implements App {
     }
 
     @Override
-    public void delRide(String date) throws NoRideOnDateException,InvalidDateException{
+    public void delRide(String date) throws NoRideOnDateException, InvalidDateException {
        dateCheck(date);
        currentUser.delRide(date);
     }
