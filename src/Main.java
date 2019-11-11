@@ -322,7 +322,7 @@ class Main {
 
         String date = scan.next();
 
-        String hour = scan.nextInt();
+        String hour = scan.next();
 
         int duration = scan.nextInt();
         int seats = scan.nextInt();

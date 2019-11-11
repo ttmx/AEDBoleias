@@ -32,7 +32,7 @@ public class AppImp implements App {
 
     @Override
     public void addTravel(String origin, String destination, String date, String time,
-                          int travelDuration, int availableSeats) {
+                          int travelDuration, int availableSeats)throws AlreadyHasRideOnDayException {
 
     }
 
