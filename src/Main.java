@@ -87,7 +87,7 @@ class Main {
                 logoff();
                 break;
             case NEWRIDE:
-                newRide(scan, app);
+                newRide(scan, app,user);
                 break;
             case LISTRIDES:
                 listRides(scan, app, user);
@@ -119,12 +119,12 @@ class Main {
     private static void removeRide(Scanner scan, User user, App app) {
         String date = scan.next();
         try {
-            app.delTravel(date);
+            app.delRide(date);
             System.out.println("Deslocacao removida.");
-        } catch (HasRidesException e){
-            System.out.println(user.name()+" ja nao pode eliminar esta deslocacao.");
-        } catch(NoTravelOnDateException e){
-            System.out.println(user.name() + " nesta data nao tem registo de deslocacao.");
+        } catch (InvalidDateException e) {
+            System.out.println("Data invalida.");
+        } catch (NoRideOnDateException e) {
+            System.out.println(user.name()+" nesta data nao tem registo de boleia.");
         }
     }
 
@@ -241,7 +241,7 @@ class Main {
     }
 
     private static void getInfo(Scanner scan, App app) {
-        String lEmail = scan.next().trim();
+       /* String lEmail = scan.next().trim();
         int[] lDate = app.dateFromString(scan.next().trim());
         UserImp lPerson = app.getPersonFromEmail(lEmail);
         app.sortAccounts();
@@ -262,11 +262,11 @@ class Main {
             } if(!hasFound){
                 System.out.println(MOV_NOT_EXIST);
             }
-        }
+        }*/
     }
 
     private static void listRides(Scanner scan, App app, User personObj) {
-        String lDate = scan.nextLine().trim();
+        /*String lDate = scan.nextLine().trim();
 
         int[] laDate;
         if (!lDate.equals("")) {
@@ -285,10 +285,10 @@ class Main {
             }else{
                 System.out.println(personObj.name()+" nao tem deslocacoes registadas.");
             }
-        }
+        }*/
     }
 
-    private static void listRidesWDate(int[] date, App app, User personObj) {
+    /*private static void listRidesWDate(int[] date, App app, User personObj) {
         int userCount = app.getUserCount();
         UserImp person = null;
         boolean hasFound = false;
@@ -316,7 +316,7 @@ class Main {
             	System.out.println(personObj.name() + " nao existem deslocacoes registadas para " + date[0]+"-"+ date[1]+"-"+ date[2]+".");
             }
         }
-    }
+    }*/
 
     private static void removeTravel(Scanner scan, User pObj, App app) {
         String date = scan.next();
@@ -355,10 +355,9 @@ class Main {
         }
     }
 
-    private static void takeARide(User pObj, Scanner scan, App app) {
+    private static void takeARide(User user, Scanner scan, App app) {
         String destEmail = scan.next().trim();
         String date = scan.next().trim();
-        User person = app.getPersonFromEmail(destEmail);
         try{
             app.addRide(destEmail,date);
             System.out.println("Boleia registada.");
@@ -369,9 +368,11 @@ class Main {
         }catch(NoRideOnDateException e){
             System.out.println("Deslocacao nao existe.");
         }catch(SamePersonException e){
-            System.out.println(pObj.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
+            System.out.println(user.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
         }catch(PlacedInQueueException e){
             System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
+        } catch (AlreadyHasRideOnDayException e) {
+            System.out.println(user.name() + " ja registou uma boleia ou deslocacao nesta data.");
         }
     }
 
@@ -379,6 +380,7 @@ class Main {
         System.out.println(BYEBYE);
     }
 
+    /*
     private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
         if (needDriver) {
             System.out.println(person.email());
