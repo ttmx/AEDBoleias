@@ -7,9 +7,8 @@
  * All rights reserved.
  */
 
-import app.App;
-import app.AppImp;
-import app.UserImp;
+import app.*;
+import exception.*;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -30,17 +29,18 @@ class Main {
     private static final String INV_COMMAND = "Comando invalido.";
     private static final String REG_SUCCESS = "Registo efetuado.";
     private static final String MOV_NOT_EXIST = "Deslocacao nao existe.";
+    private static final String USER_NOT_EXIST = "Utilizador nao existente.";
 
     public static void main(String[] args) {
     	
         Locale.setDefault(new Locale("en", "US"));
-        App CObj = new AppImp();
+        App app = new AppImp();
         Scanner scan = new Scanner(System.in);
         //Inicio do Programa
-        //mainMenu(scan, CObj);
+        mainMenu(scan, app);
     }
     //Estado de menu principal(sem sessao iniciada)
-  /*  public static void mainMenu(Scanner scan, App CObj) {
+    public static void mainMenu(Scanner scan, App app) {
 
         String lCmd = "";
         //Enquanto o comando nao for termina
@@ -56,10 +56,10 @@ class Main {
                 scan.nextLine();
                 break;
             case REGISTER:
-                register(scan, CObj);
+                register(scan, app);
                 break;
             case LOGIN:
-                login(scan, CObj);
+                login(scan, app);
                 break;
             case END:
                 printEnd();
@@ -74,31 +74,31 @@ class Main {
     }
     //Estado de sessao iniciada
     //@param O objecto Person definido no login
-    public static void loggedIn(UserImp personObj, Scanner scan, App CObj) {
+    public static void loggedIn(User user, Scanner scan, App app) {
         String lCmd = "";
         //Enquanto que o comando nao for sai
         while (!lCmd.equals(LOGOFF)) {
         	//Criacao do prompt
-            System.out.print(personObj.getEmail() + " > ");
+            System.out.print(user.getEmail() + " > ");
             lCmd = readCommand(scan);
             switch (lCmd) {
             case LOGOFF:
                 logoff();
                 break;
             case NEWRIDE:
-                newRide(personObj, scan, CObj);
+                newRide(scan, app);
                 break;
             case LISTRIDES:
-                listRides(scan, CObj, personObj);
+                listRides(scan, app, user);
                 break;
             case GETINFO:
-                getInfo(scan, CObj);
+                getInfo(scan, app);
                 break;
             case TAKEARIDE:
-                takeARide(personObj, scan, CObj);
+                takeARide(user, scan, app);
                 break;
             case REMOVERIDE:
-            	removeRide(scan, personObj,CObj);
+            	removeRide(scan, user,app);
                 break;
             case HELP:
                 printLoggedInHelp();
@@ -138,44 +138,41 @@ class Main {
     }
     //Registo de uma conta
     //@param O objeto controlador 
-    private static void register(Scanner scan, App CObj) {
-        boolean lHasCreated = false;
+    private static void register(Scanner scan, App app) {
         //Contador de passwords falhadas
-        int lFailCount = 0;
+        int failCount = 0;
         //Leitura do email 
-        String lEmail = scan.next();
-        String lName = "";
-        String lPass = "";
+        String email = scan.next();
+        String name = "";
+        String pass = "";
         scan.nextLine();
         //Verificacao da existencia de um email igual no programa
-        boolean repeatedEmail = CObj.repeatedEmail(lEmail);
-        //Se nao existirem nenhumas contas com esse email
-        if (!repeatedEmail) {
-        	//Leitura do nome
-            System.out.print("nome (maximo 50 caracteres): ");
-            lName = scan.nextLine();
-            //Ciclo responsavel pela verificacao da password
-            while (lFailCount < 3 && !lHasCreated) {
-                System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
-                lPass = scan.next();
-                scan.nextLine();
-                //se password for valida
-                if (isPwValid(lPass)) {
-                	//Cria a conta no objeto controlador 
-                    CObj.createAccount(lEmail, lName, lPass);
-                    System.out.println(REG_SUCCESS);
-                    lHasCreated = true;
-                } else {
-                    lFailCount++;
-                    System.out.println("Password incorrecta.");
-                }
-            }
-        }
-        if (repeatedEmail) {
+        try{
+            app.hasEmail(email);
+        }catch (HasEmailException e){
             System.out.println("Utilizador ja existente.");
         }
-        if (!lHasCreated) {
-            System.out.println("Registo nao efetuado.");
+        //Se nao existirem nenhumas contas com esse email
+        //Leitura do nome
+        System.out.print("nome (maximo 50 caracteres): ");
+        name = scan.nextLine();
+        //Ciclo responsavel pela verificacao da password
+        while (failCount < 3 ) {
+            System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
+            pass = scan.next();
+            scan.nextLine();
+            //se password for valida
+            if (isPwValid(pass)) {
+                //Cria a conta no objeto controlador
+                app.addUser(email, name, pass);
+                System.out.println(REG_SUCCESS);
+            } else {
+                failCount++;
+                System.out.println("Password incorrecta.");
+            }
+        }
+        if (failCount>=3) {
+            System.out.println("Registo nao realizado.");
         }
 
     }
@@ -198,26 +195,26 @@ class Main {
         System.out.println("remove - elimina uma dada deslocacao");
     }
 
-    private static void login(Scanner scan, App CObj) {
-        String lEmail = scan.next();
+    private static void login(Scanner scan, App app) {
+        String email = scan.next();
         scan.nextLine();
-        String lPass = "";
-        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
-        boolean lLoggedIn = false;
-        if (lPerson != null) {
-            for (int i = 0; !lLoggedIn && i < 3; i++) {
-                System.out.print("password: ");
-                lPass = scan.next();
-                scan.nextLine();
-                if (lPass.equals(lPerson.getPw())) {
-                    lLoggedIn = true;
-                    loggedIn(lPerson, scan, CObj);
-                } else {
-                    System.out.println("Password incorrecta.");
-                }
+        String pass = "";
+        try{
+            app.userExistsCheck(email);
+        }catch (UserIsNullException e){
+            System.out.println(USER_NOT_EXIST);
+        }
+        for (int i = 0; i < 3; i++) {
+            System.out.print("password: ");
+            pass = scan.next();
+            scan.nextLine();
+            try{
+                User user = app.getUserWithPass(email,pass);
+                loggedIn(user, scan, app);
+                break;
+            } catch(WrongPasswordException e) {
+                System.out.println("Password incorrecta.");
             }
-        } else {
-            System.out.println("Utilizador nao existente.");
         }
 
     }
@@ -226,11 +223,11 @@ class Main {
         System.out.println(BYEBYE);
     }
 
-    private static void getInfo(Scanner scan, App CObj) {
+    private static void getInfo(Scanner scan, App app) {
         String lEmail = scan.next().trim();
-        int[] lDate = CObj.dateFromString(scan.next().trim());
-        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
-        CObj.sortAccounts();
+        int[] lDate = app.dateFromString(scan.next().trim());
+        UserImp lPerson = app.getPersonFromEmail(lEmail);
+        app.sortAccounts();
         boolean hasFound = false;
         if (lPerson == null) {
             System.out.println(MOV_NOT_EXIST);
@@ -251,16 +248,16 @@ class Main {
         }
     }
 
-    private static void listRides(Scanner scan, App CObj, UserImp personObj) {
+    private static void listRides(Scanner scan, App app, User personObj) {
         String lDate = scan.nextLine().trim();
 
         int[] laDate;
         if (!lDate.equals("")) {
-            laDate = CObj.dateFromString(lDate);
-            listRidesWDate(laDate, CObj,personObj);
+            laDate = app.dateFromString(lDate);
+            listRidesWDate(laDate, app,personObj);
         } else {
             RideIterator lIterator = personObj.createRideIterator();
-            CObj.sortAccounts();
+            app.sortAccounts();
             lIterator.sort();
             if (lIterator.hasNext()) {
                 do {
@@ -274,24 +271,24 @@ class Main {
         }
     }
 
-    private static void listRidesWDate(int[] date, App CObj, UserImp personObj) {
-        int lUserCount = CObj.getUserCount();
-        UserImp lPerson = null;
+    private static void listRidesWDate(int[] date, App app, User personObj) {
+        int userCount = app.getUserCount();
+        UserImp person = null;
         boolean hasFound = false;
         if(!personObj.isDateValid(date)) {
         	
         	System.out.println("Data invalida.");      	
         }else{
-            for (int i = 0; i < lUserCount; i++) {
-            	CObj.sortAccounts();
-                lPerson = CObj.getPersonFromIndex(i);
+            for (int i = 0; i < userCount; i++) {
+            	app.sortAccounts();
+                person = app.getPersonFromIndex(i);
                 
-                RideIterator lIterator = lPerson.createRideIterator();
-                lIterator.sort();
-                while (lIterator.hasNext()) {
-                    Itinerary lRide = lIterator.nextRide();
+                RideIterator iterator = person.createRideIterator();
+                iterator.sort();
+                while (iterator.hasNext()) {
+                    Itinerary lRide = iterator.nextRide();
                     if (date[0] == lRide.getDate()[0] && date[1] == lRide.getDate()[1] && date[2] == lRide.getDate()[2]) {
-                        printRideInfo(lRide, lPerson, true, false);
+                        printRideInfo(lRide, person, true, false);
                         System.out.print("\n");
                         hasFound = true;
                     }
@@ -304,62 +301,47 @@ class Main {
         }
     }
 
-    private static void removeRide(Scanner scan, UserImp pObj, App CObj) {
-        switch(pObj.removeRide(CObj.dateFromString(scan.next().trim()))){
-            case 0:
-                System.out.println("Deslocacao removida.");
-                break;
-            case 1:
-                System.out.println("Data invalida.");
-                break;
-            case 2:
-                System.out.println("Deslocacao nao existe.");
-                break;
-            case 3:
-                System.out.println(pObj.getName() + " ja nao pode eliminar esta deslocacao.");
-                break;
-
+    private static void removeRide(Scanner scan, User pObj, App app) {
+        String date = scan.next();
+        try {
+            app.removeRide(date);
+            System.out.println("Deslocacao removida.");
+        } catch (HasRidesException e){
+            System.out.println(e.getMessage()+" ja nao pode eliminar esta deslocacao.");
+        } catch(NoRideOnDateException e){
+            System.out.println(e.getMessage() + " nesta data nao tem registo de deslocacao.");
         }
+
     }
 
-    private static void newRide(UserImp personObj, Scanner scan, App CObj) {
+    private static void newRide(Scanner scan, App app,User user) {
         scan.nextLine();
-        String lOrigin = scan.nextLine();
+        String origin = scan.nextLine();
 
-        String lDestination = scan.nextLine();
+        String destination = scan.nextLine();
 
-        String lDate = scan.next();
-        int[] laDate = CObj.dateFromString(lDate);
+        String date = scan.next();
 
-        int lHour = scan.nextInt();
+        String hour = scan.nextInt();
 
-        float lDuration = scan.nextFloat();
-        int lSeats = scan.nextInt();
+        int duration = scan.nextInt();
+        int seats = scan.nextInt();
 
         // 0 if good, 1 if invalid data, 2 if already registered
-        switch (personObj.newRide(lOrigin, lDestination, laDate, lHour, lDuration, lSeats)) {
-        case 0:
-            System.out.println("Deslocacao registada. Obrigado " + personObj.getName() + ".");
-            break;
-        case 1:
+        try {
+            app.addTravel(origin,destination,date,hour,duration,seats);
+            System.out.println("Deslocacao "+ user.getNumberOfTravels()+" registada. Obrigado "+user.getName()+".");
+        } catch(AlreadyHasRideOnDayException e) {
+            System.out.println(user.getName()+" ja tem uma deslocacao ou boleia nesta data.");
+        } catch(InvalidDataException e){
             System.out.println("Dados invalidos.");
-            System.out.println("Deslocacao nao registada.");
-            break;
-        case 2:
-            System.out.println(personObj.getName() + " ja tem uma deslocacao registada nesta data");
-            System.out.println("Deslocacao nao registada.");
-            break;
-        default:
-            System.out.println("I have absolutely no idea how you got here");
-            break;
         }
-
     }
 
-    private static void takeARide(UserImp pObj, Scanner scan, App CObj) {
+    private static void takeARide(User pObj, Scanner scan, App app) {
         String lEmail = scan.next().trim();
-        int[] lDate = CObj.dateFromString(scan.next().trim());
-        UserImp lPerson = CObj.getPersonFromEmail(lEmail);
+        int[] lDate = app.dateFromString(scan.next().trim());
+        UserImp lPerson = app.getPersonFromEmail(lEmail);
 
         if (!pObj.isDateValid(lDate)) {
             System.out.println("Data invalida.");
@@ -384,7 +366,7 @@ class Main {
         System.out.println(BYEBYE);
     }
 
-    private static void printRideInfo(Itinerary ride, UserImp person, boolean needDriver, boolean freeSpots) {
+    private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
         if (needDriver) {
             System.out.println(person.getEmail());
         }

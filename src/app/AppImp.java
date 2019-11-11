@@ -2,16 +2,17 @@ package app;
 
 import dataStructures.Map;
 import dataStructures.MapWithJavaClass;
+import exception.*;
 
 public class AppImp implements App {
     private User currentUser;
     private Map<String, User> users;
-    private Map<String, Travel> travels;
+    private Map<String, Map<String,Travel>> travels;
 
     public AppImp() {
         // TODO: Change expected number of users from 0
         users = new MapWithJavaClass<String, User>(0);
-        travels = new MapWithJavaClass<String, Travel>(0);
+        travels = new MapWithJavaClass<String, Map<String,Travel>>(0);
     }
 
     @Override
@@ -36,8 +37,14 @@ public class AppImp implements App {
     }
 
     @Override
-    public void delTravel(String date) {
-
+    public void delTravel(String date) throws NoTravelOnDateException, HasRidesException {
+        Travel userTravel = currentUser.travelMap().find(date);
+        if(userTravel == null)
+            throw new NoTravelOnDateException(currentUser.getName());
+        if(userTravel.getRideUsers().hasNext())
+            throw new HasRidesException(currentUser.getName());
+        travels.find(date).remove(currentUser.getEmail());
+        currentUser.delTravel(date);
     }
 
     @Override
@@ -56,6 +63,34 @@ public class AppImp implements App {
         travels.find(date).find(travelUserEmail); iria buscar a deslocacao em causa
         */
         return null;
+    }
+
+    @Override
+    public void hasEmail(String email) throws HasEmailException {
+        if(users.find(email)!=null) throw new HasEmailException();
+    }
+
+    @Override
+    public void userExistsCheck(String email) throws UserIsNullException {
+        if(users.find(email) == null) throw new UserIsNullException();
+    }
+
+    @Override
+    public User getUserWithPass(String email, String pass) throws WrongPasswordException {
+        User user = users.find(email);
+        if(!user.getPassword().equals(pass))
+            throw new WrongPasswordException();
+        return user;
+    }
+
+    @Override
+    public void removeRide(String date) throws NoRideOnDateException, HasRidesException{
+        Travel inDate = currentUser.travelMap().find(date);
+        if(inDate == null)
+            throw new NoRideOnDateException();
+        if(inDate.getRideUsers().hasNext())
+            throw new HasRidesException(currentUser.getName());
+        inDate.remove(date);
     }
 
     /*    private UserImp[] accounts;
