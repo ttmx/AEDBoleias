@@ -79,7 +79,7 @@ class Main {
         //Enquanto que o comando nao for sai
         while (!lCmd.equals(LOGOFF)) {
         	//Criacao do prompt
-            System.out.print(user.getEmail() + " > ");
+            System.out.print(user.email() + " > ");
             lCmd = readCommand(scan);
             switch (lCmd) {
             case LOGOFF:
@@ -166,6 +166,7 @@ class Main {
                 //Cria a conta no objeto controlador
                 app.addUser(email, name, pass);
                 System.out.println(REG_SUCCESS);
+                break;
             } else {
                 failCount++;
                 System.out.println("Password incorrecta.");
@@ -266,7 +267,7 @@ class Main {
                     System.out.print("\n");
                 } while (lIterator.hasNext());
             }else{
-                System.out.println(personObj.getName()+" nao tem deslocacoes registadas.");
+                System.out.println(personObj.name()+" nao tem deslocacoes registadas.");
             }
         }
     }
@@ -296,7 +297,7 @@ class Main {
                  
             }
             if(!hasFound) {
-            	System.out.println(personObj.getName() + " nao existem deslocacoes registadas para " + date[0]+"-"+ date[1]+"-"+ date[2]+".");
+            	System.out.println(personObj.name() + " nao existem deslocacoes registadas para " + date[0]+"-"+ date[1]+"-"+ date[2]+".");
             }
         }
     }
@@ -307,9 +308,9 @@ class Main {
             app.removeRide(date);
             System.out.println("Deslocacao removida.");
         } catch (HasRidesException e){
-            System.out.println(e.getMessage()+" ja nao pode eliminar esta deslocacao.");
+            System.out.println(pObj.name()+" ja nao pode eliminar esta deslocacao.");
         } catch(NoRideOnDateException e){
-            System.out.println(e.getMessage() + " nesta data nao tem registo de deslocacao.");
+            System.out.println(pObj.name() + " nesta data nao tem registo de deslocacao.");
         }
 
     }
@@ -330,35 +331,31 @@ class Main {
         // 0 if good, 1 if invalid data, 2 if already registered
         try {
             app.addTravel(origin,destination,date,hour,duration,seats);
-            System.out.println("Deslocacao "+ user.getNumberOfTravels()+" registada. Obrigado "+user.getName()+".");
+            System.out.println("Deslocacao "+ user.numberOfTravels()+" registada. Obrigado "+user.name()+".");
         } catch(AlreadyHasRideOnDayException e) {
-            System.out.println(user.getName()+" ja tem uma deslocacao ou boleia nesta data.");
+            System.out.println(user.name()+" ja tem uma deslocacao ou boleia nesta data.");
         } catch(InvalidDataException e){
             System.out.println("Dados invalidos.");
         }
     }
 
     private static void takeARide(User pObj, Scanner scan, App app) {
-        String lEmail = scan.next().trim();
-        int[] lDate = app.dateFromString(scan.next().trim());
-        UserImp lPerson = app.getPersonFromEmail(lEmail);
-
-        if (!pObj.isDateValid(lDate)) {
+        String destEmail = scan.next().trim();
+        String date = scan.next().trim();
+        User person = app.getPersonFromEmail(destEmail);
+        try{
+            app.addRide(destEmail,date);
+            System.out.println("Boleia registada.");
+        }catch(InvalidDateException e){
             System.out.println("Data invalida.");
-        } else if (lPerson == null) {
+        }catch(UserIsNullException e){
             System.out.println("Utilizador inexistente.");
-        } else if (!lPerson.isRideAlreadyRegistered(lDate)) {
+        }catch(NoRideOnDateException e){
             System.out.println("Deslocacao nao existe.");
-        } else if (lPerson.getEmail().equals(pObj.getEmail())) {
-            System.out.println(pObj.getName() + " nao pode dar boleia a si propria. Boleia nao registada.");
-        } else {
-            //System.out.println("Empty Seats: " + lPerson.getRideFromDate(lDate).getEmptySeats() + "; date: " + lPerson.getRideFromDate(lDate).getDateNumber()+ "-" + lDate[1] + "-" + lDate[2]);
-            if (lPerson.getRideFromDate(lDate).getEmptySeats() == 0) {
-                System.out.println(pObj.getName() + " nao existe lugar. Boleia nao registada.");
-            } else {
-                lPerson.getRideFromDate(lDate).incPerson();
-                System.out.println("Boleia registada.");
-            }
+        }catch(SamePersonException e){
+            System.out.println(pObj.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
+        }catch(PlacedInQueueException e){
+            System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
         }
     }
 
@@ -368,7 +365,7 @@ class Main {
 
     private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
         if (needDriver) {
-            System.out.println(person.getEmail());
+            System.out.println(person.email());
         }
         System.out.println(ride.getOrigin());
         System.out.println(ride.getDestination());

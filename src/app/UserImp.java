@@ -22,37 +22,37 @@ public class UserImp implements User {
     }
 
     @Override
-    public String getName() {
+    public String name() {
         return name;
     }
 
     @Override
-    public String getEmail() {
+    public String email() {
         return email;
     }
 
     @Override
-    public String getPassword() {
+    public String password() {
         return password;
     }
 
     @Override
-    public int getLoginNumber() {
+    public int loginNumber() {
         return loginNumber;
     }
 
     @Override
-    public int getNumberOfTravels() {
+    public int numberOfTravels() {
         return travels.size();
     }
 
     @Override
-    public Iterator getTravels() {
+    public Iterator travels() {
         return travels.iterator();
     }
 
     @Override
-    public Iterator getRides() {
+    public Iterator rides() {
         return rides.iterator();
     }
 

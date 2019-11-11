@@ -20,8 +20,8 @@ public class AppImp implements App {
         users.insert(email, new UserImp(email, name, password));
     }
 
-    @Override
-    public User getUser(String email) {
+    // Classes outside this package should use the method that requires a password.
+    protected User getUser(String email) {
         return users.find(email);
     }
 
@@ -40,15 +40,49 @@ public class AppImp implements App {
     public void delTravel(String date) throws NoTravelOnDateException, HasRidesException {
         Travel userTravel = currentUser.travelMap().find(date);
         if(userTravel == null)
-            throw new NoTravelOnDateException(currentUser.getName());
+            throw new NoTravelOnDateException(currentUser.name());
         if(userTravel.getRideUsers().hasNext())
-            throw new HasRidesException(currentUser.getName());
-        travels.find(date).remove(currentUser.getEmail());
+            throw new HasRidesException(currentUser.name());
+        travels.find(date).remove(currentUser.email());
+
         currentUser.delTravel(date);
     }
-
+    private void dateCheck(String dateStr)throws InvalidDateException{
+        String[] strArr = dateStr.split("-");
+        int[] date = new int[strArr.length];
+        for(int i = 0; i<strArr.length;i++){
+           date[i] = Integer.parseInt(strArr[i]);
+        }
+        boolean niceDate = true;
+        int febDays = 28;
+        if ((2000 - date[2]) % 4 == 0)
+            febDays += 1;
+        int[] daysPerMonth = { 31, febDays, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        if (date[1] <= 12) {
+            if (date[0] > daysPerMonth[date[1] - 1])
+                throw new InvalidDateException();
+        } else {
+            throw new InvalidDateException();
+        }
+    }
     @Override
-    public void addRide(String travelUserEmail, String date) {
+    public void addRide(String travelUserEmail, String date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
+        dateCheck(date);
+        if(travelUserEmail.equals(currentUser.email()))
+            throw new SamePersonException();
+        User travelUser = getUser(travelUserEmail);
+        if(travelUser == null)
+            throw new UserIsNullException();
+
+        Travel travel = travelUser.travelMap().find(date);
+        if(travel == null)
+            throw new NoRideOnDateException();
+        if(currentUser.travelMap().find(date)!=null || currentUser.)
+
+        travel.addUserForTravel(currentUser);
+        currentUser.addRide();
+        if(travel.getNumOfAvailableSeats()<=0)
+            throw new PlacedInQueueException(travel.getNumOfUsersQueueHold());
 
     }
 
@@ -78,7 +112,7 @@ public class AppImp implements App {
     @Override
     public User getUserWithPass(String email, String pass) throws WrongPasswordException {
         User user = users.find(email);
-        if(!user.getPassword().equals(pass))
+        if(!user.password().equals(pass))
             throw new WrongPasswordException();
         return user;
     }
@@ -89,7 +123,7 @@ public class AppImp implements App {
         if(inDate == null)
             throw new NoRideOnDateException();
         if(inDate.getRideUsers().hasNext())
-            throw new HasRidesException(currentUser.getName());
+            throw new HasRidesException(currentUser.name());
         inDate.remove(date);
     }
 
