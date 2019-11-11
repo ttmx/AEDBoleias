@@ -3,6 +3,8 @@ package app;
 import dataStructures.Iterator;
 import dataStructures.Map;
 import dataStructures.MapWithJavaClass;
+import exception.AlreadyHasRideOnDayException;
+import exception.NoRideOnDateException;
 
 public class UserImp implements User {
     private String email;
@@ -72,13 +74,19 @@ public class UserImp implements User {
     }
 
     @Override
-    public void addRide(Travel travelToRide) {
+    public void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException {
+        if(rides.find(travelToRide.getDate())!=null)
+           throw new AlreadyHasRideOnDayException();
         rides.insert(travelToRide.getDate(), travelToRide);
     }
 
     @Override
-    public void delRide(String date) {
-        rides.remove(date);
+    public void delRide(String date)throws NoRideOnDateException {
+
+        Travel removedRide = rides.remove(date);
+        if(removedRide==null)
+            throw new NoRideOnDateException();
+        removedRide.delUserFromTravel();
     }
 
 // Anything down right now is old trash.

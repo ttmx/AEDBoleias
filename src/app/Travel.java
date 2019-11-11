@@ -1,6 +1,7 @@
 package app;
 
 import dataStructures.Iterator;
+import exception.UserNotOnTravelException;
 
 /**
  * @author Rodrigo Rosa
@@ -16,5 +17,5 @@ public interface Travel {
     Iterator getRideUsers();
     int getNumOfUsersQueueHold();
     void addUserForTravel(User user); // missing params | updated, but needs review
-    void delUserFromTravel(); // missing params
+    void delUserFromTravel(User user) throws UserNotOnTravelException; // missing params
 }

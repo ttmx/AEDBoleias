@@ -77,18 +77,17 @@ public class AppImp implements App {
         Travel travel = travelUser.travelMap().find(date);
         if(travel == null)
             throw new NoRideOnDateException();
-        if(currentUser.travelMap().find(date)!=null || currentUser.)
-
+        currentUser.addRide(travel);
         travel.addUserForTravel(currentUser);
-        currentUser.addRide();
-        if(travel.getNumOfAvailableSeats()<=0)
+        if(travel.getNumOfUsersQueueHold()>=0)
             throw new PlacedInQueueException(travel.getNumOfUsersQueueHold());
 
     }
 
     @Override
-    public void delRide(String date) {
-
+    public void delRide(String date) throws NoRideOnDateException,InvalidDateException{
+       dateCheck(date);
+       currentUser.delRide(date);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package app;
 
 import dataStructures.*;
+import exception.UserNotOnTravelException;
 
 public class TravelImp implements Travel {
     private User travelAuthor;
@@ -84,8 +85,11 @@ public class TravelImp implements Travel {
     }
 
     @Override
-    public void delUserFromTravel() {
-
+    public void delUserFromTravel(User user) throws UserNotOnTravelException{
+        int index = usersForTravel.find(user);
+        if(index==-1)
+            throw new UserNotOnTravelException();
+        usersForTravel.remove();
     }
 
     /*
