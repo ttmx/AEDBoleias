@@ -3,10 +3,12 @@ package app;
 import dataStructures.Iterator;
 import exception.UserNotOnTravelException;
 
+import java.io.Serializable;
+
 /**
  * @author Rodrigo Rosa
  */
-public interface Travel {
+public interface Travel extends Serializable {
     User getTravelAuthor();
     String getOrigin();
     String getDestination();

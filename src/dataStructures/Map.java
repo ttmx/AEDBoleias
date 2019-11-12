@@ -2,7 +2,9 @@
 package dataStructures;
 
 
-public interface Map<K, V> {
+import java.io.Serializable;
+
+public interface Map<K, V> extends Serializable {
 	
 	// Returns true iff the map contains no entries.
 	boolean isEmpty( );

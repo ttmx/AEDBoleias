@@ -5,6 +5,8 @@ import dataStructures.Map;
 import dataStructures.MapWithJavaClass;
 import exception.*;
 
+import java.io.*;
+
 public class AppImp implements App {
 
     static final long serialVersionUID = 0L;
@@ -43,9 +45,9 @@ public class AppImp implements App {
     }
 
     // Classes outside this package should use the method that requires a password.
-    protected User getUser(String email) {
+    /*protected User getUser(String email) {
         return users.find(email);
-    }
+    }*/
 
     @Override
     public int getNumOfUsers() {
@@ -151,19 +153,22 @@ public class AppImp implements App {
 
     @Override
     public void addRide(String travelUserEmail, String date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
-        dateCheck(date);
+
+        if(!dateCheck(date))
+            throw new InvalidDateException();
         if(travelUserEmail.equals(currentUser.email()))
-            throw new SamePersonException();
-        User travelUser = getUser(travelUserEmail);
+            throw new SamePersonException(currentUser.name());
+        User travelUser = users.find(travelUserEmail);
         if(travelUser == null)
             throw new UserIsNullException();
 
-        Travel travel = travelUser.travelMap().find(date);
-        if(travel == null)
+        if(travelUser.hasTravelOnDate(date))
             throw new NoRideOnDateException();
+        Travel travel = travelUser.getTravel(date);
         currentUser.addRide(travel);
         travel.addUserForTravel(currentUser);
-        if(travel.getNumOfUsersQueueHold()>=0)
+
+        if(travel.getNumOfUsersQueueHold()>0)
             throw new PlacedInQueueException(travel.getNumOfUsersQueueHold());
 
     }
@@ -218,6 +223,19 @@ public class AppImp implements App {
     public Iterator<Travel> getUserTravels() {
         return currentUser.travels();
     }
+
+    @Override
+    public void store() {
+        try{
+            ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream("./App.ser"));
+            file.writeObject(this);
+            file.flush();
+            file.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 
     /*    private UserImp[] accounts;
     private int personCount;

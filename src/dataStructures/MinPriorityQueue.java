@@ -1,6 +1,8 @@
 package dataStructures;
 
-public interface MinPriorityQueue<K, E> {
+import java.io.Serializable;
+
+public interface MinPriorityQueue<K, E> extends Serializable {
 	// Returns true if the priority queue contains no elements.
 	boolean isEmpty( );
 	 

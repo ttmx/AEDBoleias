@@ -2,7 +2,7 @@ package app;
 import dataStructures.Iterator;
 import exception.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * @author Rodrigo Rosa
@@ -28,4 +28,23 @@ public interface App extends Serializable {
     Iterator<Travel> getAppRegisteredTravels();
     Iterator<Travel> getAppRegisteredTravelsOnDate(String date);
     Iterator<Travel> getUserTravels();
+
+    static App load() {
+        App app = null;
+        try{
+            ObjectInputStream file = new ObjectInputStream(
+                    new FileInputStream("./App.ser")
+            );
+            app = (App) file.readObject();
+            file.close();
+        } catch (FileNotFoundException e) {
+            return new AppImp();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return app;
+    }
+
+
+    void store();
 }

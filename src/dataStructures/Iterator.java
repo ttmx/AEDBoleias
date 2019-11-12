@@ -3,11 +3,15 @@
  */
 package dataStructures;
 
+import org.omg.PortableServer.ServantActivator;
+
+import java.io.Serializable;
+
 /**
  * @author fernanda
  *
  */
-public interface Iterator<E> {
+public interface Iterator<E> extends Serializable {
 
 	// Returns true iff the iteration has more elements.
 	// In other words, returns true if next would return an element.

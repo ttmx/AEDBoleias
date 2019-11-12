@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author Rodrigo Rosa
  */
-public interface User {
+public interface User extends Serializable{
     String name();
     String email();
     String password();

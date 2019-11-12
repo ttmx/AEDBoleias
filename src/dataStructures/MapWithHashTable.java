@@ -1,6 +1,6 @@
 package dataStructures;
 
-public abstract class MapWithHashTable<K, V> implements Map<K, V> {
+public abstract class MapWithHashTable<K, V> implements Map<K, V>{
 
 	// Default size of the hash table.
 	public static final int DEFAULTCAPACITY = 50;

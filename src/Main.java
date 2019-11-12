@@ -18,13 +18,19 @@
  * GetInfo - works too from what it looks (missing emails list of riders too)
  *
  * TODO:
- * Notes: We can't pass any future tests withou serializable - SUPER IMPORTANT
+ * Notes: We can't pass any future tests without serializable - SUPER IMPORTANT
  *
  */
 
 import app.*;
 import exception.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.GenericDeclaration;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 import dataStructures.Iterator;
 
@@ -75,7 +81,7 @@ class Main {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        App app = new AppImp();
+        App app = App.load();
         String cmd = getCommand(in, app);
         outSessionMenu(in, app, cmd);
     }
@@ -105,17 +111,23 @@ class Main {
                 case LOGIN:
                     login(in, app);
                     break;
-                /*case EXIT:
-                    printEnd();
-                    break;*/
+                case EXIT:
+                    end(app);
+                    break;
                 default:
                     System.out.println(INVALID_CMD);
                     break;
             }
             cmd = getCommand(in, app);
         }
-        System.out.println(EXIT_MSG);
+        end(app);
         in.close();
+    }
+
+    private static void end(App app) {
+
+        app.store();
+        System.out.println(EXIT_MSG);
     }
 
     /**
@@ -359,13 +371,13 @@ class Main {
         }catch(UserIsNullException e){
             System.out.println("Utilizador inexistente.");
         }catch(NoRideOnDateException e){
-            System.out.println("Deslocacao nao existe.");
+            System.out.println(MOV_NOT_EXIST);
         }catch(SamePersonException e){
-            //System.out.println(user.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
+            System.out.println(e.getMessage() + " nao pode dar boleia a si propria. Boleia nao registada.");
         }catch(PlacedInQueueException e){
             System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
         } catch (AlreadyHasRideOnDayException e) {
-            //System.out.println(user.name() + " ja registou uma boleia ou deslocacao nesta data.");
+            System.out.println(e.getMessage() + " ja registou uma boleia ou deslocacao nesta data.");
         }
     }
 
@@ -421,7 +433,7 @@ class Main {
        } catch (InvalidDateException e) {
            System.out.println("Data invalida.");
        } catch (InvalidTravelException e) {
-           System.out.println("Deslocacao nao existe.");
+           System.out.println(MOV_NOT_EXIST);
        }
     }
 
