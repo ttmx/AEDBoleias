@@ -24,7 +24,7 @@ public class TravelImp implements Travel {
         this.duration = duration;
         this.seatCap = seatCap;
         this.usersForTravel = new Array<User>();
-        this.usersInQueueForTravel = new QueueInArray<>(); // ou QueueInList idk?
+        this.usersInQueueForTravel = new QueueInArray<User>(); // ou QueueInList idk?
         //dateAsNumber = date[0]+date[1]*100+date[2]*10000;
     }
 
@@ -90,6 +90,11 @@ public class TravelImp implements Travel {
         if(index==-1)
             throw new UserNotOnTravelException();
         usersForTravel.remove(index);
+    }
+
+    @Override
+    public boolean hasRiders() {
+        return usersForTravel.size() > 0;
     }
 
     /*

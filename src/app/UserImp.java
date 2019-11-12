@@ -7,6 +7,7 @@ import exception.AlreadyHasRideOnDayException;
 import exception.NoRideOnDateException;
 
 public class UserImp implements User {
+
     private String email;
     private String name;
     private String password;
@@ -49,8 +50,8 @@ public class UserImp implements User {
     }
 
     @Override
-    public Iterator travels() {
-        return travels.iterator();
+    public Iterator<Travel> travels() {
+        return travels.values();
     }
 
     @Override
@@ -74,22 +75,47 @@ public class UserImp implements User {
     }
 
     @Override
+    public Travel getTravel(String date) {
+        return travels.find(date);
+    }
+
+    @Override
     public void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException {
-        if(rides.find(travelToRide.getDate())!=null)
+        if (rides.find(travelToRide.getDate()) != null)
            throw new AlreadyHasRideOnDayException();
         rides.insert(travelToRide.getDate(), travelToRide);
     }
 
     @Override
-    public void delRide(String date)throws NoRideOnDateException {
-
-        Travel removedRide = rides.remove(date);
-        if(removedRide==null)
+    public void delRide(String date) throws NoRideOnDateException {
+        if (rides.find(date) == null) {
             throw new NoRideOnDateException();
-        removedRide.delUserFromTravel();
+        }
+        Travel removedRide = rides.remove(date);
+        //removedRide.delUserFromTravel();
     }
 
-// Anything down right now is old trash.
+    @Override
+    public Map<String, Travel> travelMap() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Travel> rideMap() {
+        return null;
+    }
+
+    @Override
+    public boolean hasTravelOnDate(String date) {
+        return travels.find(date) != null;
+    }
+
+    @Override
+    public boolean hasRideOnDate(String date) {
+        return rides.find(date) != null;
+    }
+
+    // Anything down right now is old trash.
 
 
     /*public RideIterator createRideIterator() {

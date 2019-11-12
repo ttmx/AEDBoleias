@@ -18,4 +18,5 @@ public interface Travel {
     int getNumOfUsersQueueHold();
     void addUserForTravel(User user); // missing params | updated, but needs review
     void delUserFromTravel(User user) throws UserNotOnTravelException; // missing params
+    boolean hasRiders();
 }

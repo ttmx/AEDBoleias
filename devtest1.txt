@@ -1,0 +1,14 @@
+regista aa@edu.pt
+userAA
+test1
+nova
+regista bb@edu.pt
+userBB
+test2
+entrada aa@edu.pt
+test1
+nova
+Origem
+Destino
+12-7-2012 10:12 70 5
+consulta aa@edu.pt 12-7-2012

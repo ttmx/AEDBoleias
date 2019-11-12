@@ -5,6 +5,10 @@ public class MapWithJavaClass<K,V> implements Map<K,V> {
 	protected java.util.Map<K,V> elementos;
 	protected int capPrevista;
 
+	public MapWithJavaClass() {
+		elementos = new java.util.HashMap<K,V>();
+	}
+
 	public MapWithJavaClass(int prevusers) {
 		elementos = new java.util.HashMap<K,V>(prevusers);
 		capPrevista = prevusers;

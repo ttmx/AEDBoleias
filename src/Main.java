@@ -7,221 +7,307 @@
  * All rights reserved.
  */
 
+/*
+ * Register - Working
+ * Login - Working
+ * Logout - Working
+ * Help - Working (initial and session)
+ * New Travels looks like its working and consultation too (missing emails list of riders tho)
+ * Removing travels looks like it's working too.
+ * List minhas parece funcionar mas está fora de ordem (fixable easily I think? we just use comparator i guess)
+ * GetInfo - works too from what it looks (missing emails list of riders too)
+ *
+ * TODO:
+ * Notes: We can't pass any future tests withou serializable - SUPER IMPORTANT
+ *
+ */
+
 import app.*;
 import exception.*;
 
-import java.util.Locale;
 import java.util.Scanner;
+import dataStructures.Iterator;
 
 class Main {
-	//Constantes
-    private static final String HELP = "ajuda";
-    private static final String END = "termina";
-    private static final String REGISTER = "regista";
-    private static final String LOGIN = "entrada";
-    private static final String LOGOFF = "sai";
-    private static final String NEWRIDE = "nova";
-    private static final String LISTRIDES = "lista";
-    private static final String GETINFO = "consulta";
-    private static final String TAKEARIDE = "boleia";
-    private static final String REMOVETRAVEL = "remove";
-    private static final String REMOVERIDE = "retira";
-    private static final String BYEBYE = "Obrigado. Ate a proxima.";
-    private static final String INV_COMMAND = "Comando invalido.";
-    private static final String REG_SUCCESS = "Registo efetuado.";
-    private static final String MOV_NOT_EXIST = "Deslocacao nao existe.";
+
+	// Commands
+    private static final String HELP = "AJUDA";
+    private static final String EXIT = "TERMINA";
+    private static final String REGISTER = "REGISTA";
+    private static final String LOGIN = "ENTRADA";
+    private static final String LOGOUT = "SAI";
+    private static final String NEW_TRAVEL = "NOVA";
+    private static final String LISTING = "LISTA";
+    private static final String GETINFO = "CONSULTA";
+    private static final String NEW_RIDE = "BOLEIA";
+    private static final String REMOVE_TRAVEL = "REMOVE";
+    private static final String REMOVE_RIDE = "RETIRA";
+
+    // Outputs
+    private static final String INVALID_CMD = "Comando invalido.";
+    private static final String ON_SESSION_INPUT = "%s > ";
+    private static final String HELP_DEFAULT = "ajuda - Mostra os comandos existentes\n" +
+            "termina - Termina a execucao do programa\n" +
+            "regista - Regista um novo utilizador no programa\n" +
+            "entrada - Permite a entrada (\"login\") dum utilizador no programa";
+    private static final String HELP_ON_SESSION = "ajuda - Mostra os comandos existentes\n" +
+            "sai - Termina a sessao deste utilizador no programa\n" +
+            "nova - Regista uma nova deslocacao\n" +
+            "lista - Lista todas ou algumas deslocacoes registadas\n" +
+            "boleia - Regista uma boleia para uma dada deslocacao\n" +
+            "consulta - Lista a informacao de uma dada deslocacao\n" +
+            "retira - Retira uma dada boleia\n" +
+            "remove - Elimina uma dada deslocacao";
+    private static final String EXIT_MSG = "Obrigado. Ate a proxima.";
+    private static final String LOGOUT_MSG = "Ate a proxima %s.\n";
+    private static final String REG_SUCCESS = "Registo %d efetuado.\n";
+    private static final String REGISTER_FAIL = "Registo nao realizado.";
+    private static final String USER_EXISTS = "Utilizador ja existente.";
     private static final String USER_NOT_EXIST = "Utilizador nao existente.";
+    private static final String LOGIN_FAIL = "Entrada nao realizada.";
+    private static final String LOGIN_SUCCESS = "Visita %d efetuada.\n";
+    private static final String NEW_TRAVEL_SUCCESS = "Deslocacao %d registada. Obrigado %s.\n";
+    private static final String NEW_TRAVEL_ERR1 = "Dados invalidos.";
+    private static final String NEW_TRAVEL_ERR2 = "%s ja tem uma deslocacao ou boleia registada nesta data.\n";
+    private static final String NEW_RIDE_SUCCESS = "Boleia registada.";
+    private static final String MOV_NOT_EXIST = "Deslocacao nao existe.";
+
 
     public static void main(String[] args) {
-    	
-        Locale.setDefault(new Locale("en", "US"));
+        Scanner in = new Scanner(System.in);
         App app = new AppImp();
-        Scanner scan = new Scanner(System.in);
-        //Inicio do Programa
-        mainMenu(scan, app);
+        String cmd = getCommand(in, app);
+        outSessionMenu(in, app, cmd);
     }
-    //Estado de menu principal(sem sessao iniciada)
-    public static void mainMenu(Scanner scan, App app) {
 
-        String lCmd = "";
-        //Enquanto o comando nao for termina
-        while (!lCmd.equals(END)) {
+    /**
+     * Options menu during program initial state (no user signed in).
+     *
+     * @param in
+     * @param app
+     * @param cmd
+     */
+    public static void outSessionMenu(Scanner in, App app, String cmd) {
+        // Enquanto o comando nao for termina
+        while (!cmd.equals(EXIT)) {
         	//Criacao do prompt
-            System.out.print("> ");
+            //System.out.print("> ");
             //Leitura dos comandos
-            lCmd = readCommand(scan);
+            //lCmd = readCommand(scan);
             //Processamento dos comandos
-            switch (lCmd) {
-            case HELP:
-                printMenuHelp();
-                scan.nextLine();
-                break;
-            case REGISTER:
-                register(scan, app);
-                break;
-            case LOGIN:
-                login(scan, app);
-                break;
-            case END:
-                printEnd();
-                break;
-            default:
-                printInvalidCmd();
-                scan.nextLine();
-                break;
+            switch (cmd) {
+                case HELP:
+                    printOutSessionHelp();
+                    break;
+                case REGISTER:
+                    register(in, app);
+                    break;
+                case LOGIN:
+                    login(in, app);
+                    break;
+                /*case EXIT:
+                    printEnd();
+                    break;*/
+                default:
+                    System.out.println(INVALID_CMD);
+                    break;
             }
-
+            cmd = getCommand(in, app);
         }
+        System.out.println(EXIT_MSG);
+        in.close();
     }
-    //Estado de sessao iniciada
-    //@param O objecto Person definido no login
-    public static void loggedIn(User user, Scanner scan, App app) {
-        String lCmd = "";
+
+    /**
+     * Options menu during program session state (user signed in).
+     *
+     * @param in
+     * @param app
+     */
+    public static void onSessionMenu(Scanner in, App app) {
+        String cmd = getCommand(in, app);
         //Enquanto que o comando nao for sai
-        while (!lCmd.equals(LOGOFF)) {
+        while (!cmd.equals(LOGOUT)) {
         	//Criacao do prompt
-            System.out.print(user.email() + " > ");
-            lCmd = readCommand(scan);
-            switch (lCmd) {
-            case LOGOFF:
-                logoff();
-                break;
-            case NEWRIDE:
-                newRide(scan, app,user);
-                break;
-            case LISTRIDES:
-                listRides(scan, app, user);
-                break;
-            case GETINFO:
-                getInfo(scan, app);
-                break;
-            case TAKEARIDE:
-                takeARide(user, scan, app);
-                break;
-            case REMOVETRAVEL:
-            	removeTravel(scan, user,app);
-                break;
-            case REMOVERIDE:
-                removeRide(scan,user,app);
-            case HELP:
-                printLoggedInHelp();
-                break;
-            default:
-                printInvalidCmd();
-                scan.nextLine();
-                break;
-            }
-
+            //System.out.print(user.email() + " > ");
+            //cmd = readCommand(scan);
+            switch (cmd) {
+                /*case LOGOUT:
+                    logout(app);
+                    break;*/
+                case HELP:
+                    printOnSessionHelp();
+                    break;
+                case NEW_TRAVEL:
+                    newTravel(in, app);
+                    break;
+                case NEW_RIDE:
+                    newRide(in, app);
+                    break;
+                case LISTING:
+                    listing(in, app);
+                    break;
+                case GETINFO:
+                    getInfo(in, app);
+                    break;
+                case REMOVE_TRAVEL:
+                    removeTravel(in, app);
+                    break;
+                case REMOVE_RIDE:
+                    removeRide(in, app);
+                default:
+                    in.nextLine();
+                    System.out.println(INVALID_CMD);
+                    break;
+                }
+            cmd = getCommand(in, app);
         }
-
+        logout(app);
+        //in.close();
     }
 
-    private static void removeRide(Scanner scan, User user, App app) {
-        String date = scan.next();
-        try {
-            app.delRide(date);
-            System.out.println("Deslocacao removida.");
-        } catch (InvalidDateException e) {
-            System.out.println("Data invalida.");
-        } catch (NoRideOnDateException e) {
-            System.out.println(user.name()+" nesta data nao tem registo de boleia.");
+    /**
+     * Command input receiver and converter
+     *
+     * @param in
+     * @param app
+     * @return
+     */
+    private static String getCommand(Scanner in, App app) {
+        String input;
+        if (app.hasSession()) {
+            System.out.printf(ON_SESSION_INPUT, app.getCurrentUserId());
         }
+        else {
+            System.out.print("> ");
+        }
+        input = in.next().toUpperCase();
+        return input;
     }
 
     //Leitura e a formatacao do comando
+    /*
     public static String readCommand(Scanner scan) {
         String lRead = "";
         lRead = scan.next().toLowerCase();
 
         return lRead;
+    }*/
+
+    /**
+     * User register on the app process
+     *
+     * @param in
+     * @param app
+     */
+    private static void register(Scanner in, App app) {
+        //Contador de passwords falhadas
+        int failCount = 0;
+        //Leitura do email
+        String email = in.next();
+        //String name = "";
+        //String pass = "";
+        //in.nextLine();
+        //Verificacao da existencia de um email igual no programa
+        /*try {
+            app.hasEmail(email);
+        }catch (HasEmailException e){
+            System.out.println("Utilizador ja existente.");
+        }*/
+        if (app.hasEmail(email)) {
+            System.out.println(USER_EXISTS);
+        }
+        else {
+            System.out.print("nome (maximo 50 caracteres): ");
+            String name = in.next();
+            in.nextLine();
+            String password;
+            while (failCount < 3) {
+                System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
+                password = in.next();
+                in.nextLine();
+                //se password for valida
+                if (isPwValid(password)) {
+                    //Cria a conta no objeto controlador
+                    app.addUser(email, name, password);
+                    System.out.printf(REG_SUCCESS, app.getNumOfUsers());
+                    break;
+                } else {
+                    failCount++;
+                    //System.out.println(REGISTER_FAIL);
+                }
+            }
+        }
+        //Se nao existirem nenhumas contas com esse email
+        //Leitura do nome
+        if (failCount >= 3) {
+            System.out.println(REGISTER_FAIL);
+        }
     }
-    //Verificao da password
-    //@param uma password
+
+    /**
+     * Checks if the password is valid (4 to 6 characters alphanumerical)
+     *
+     * @param pw
+     * @return
+     */
     private static boolean isPwValid(String pw) {
         boolean lIsValid = true;
+        /*boolean hasDigits = false;
+        boolean hasLetter = false;
         //Verifica se cada caracter e um digito ou letra
         //se algum dos caracteres for algo que nao um digito ou letra entao o metodo retorna falso
         for (int i = 0; i < pw.length(); i++) {
             if (!Character.isLetterOrDigit(pw.charAt(i))) {
-                lIsValid = false;
+                //lIsValid = false;
+                return false;
             }
+            if (!Character.isLetter(pw.charAt(i))) {
+
+            }
+        }*/
+        //if (!pw.matches("/[A-Za-z0-9]]+/g")) {
+        if (!(pw.matches(".*[a-zA-Z].*") && pw.matches(".*[0-9].*"))) { // regex for alphanumerical with 1 or more matches required.
+        //if (!pw.matches("[0-9a-zA-Z]+")) {
+            lIsValid = false;
         }
         return (pw.length() <= 6 && pw.length() >= 4 && lIsValid);
     }
-    
-    private static void printInvalidCmd() {
-        System.out.println(INV_COMMAND);
+
+    private static void printOutSessionHelp() {
+        System.out.println(HELP_DEFAULT);
     }
-    //Registo de uma conta
-    //@param O objeto controlador 
-    private static void register(Scanner scan, App app) {
-        //Contador de passwords falhadas
+
+    private static void printOnSessionHelp() {
+        System.out.println(HELP_ON_SESSION);
+    }
+
+    private static void login(Scanner in, App app) {
+        String email = in.next();
+        in.nextLine();
+        String password;
         int failCount = 0;
-        //Leitura do email 
-        String email = scan.next();
-        String name = "";
-        String pass = "";
-        scan.nextLine();
-        //Verificacao da existencia de um email igual no programa
-        try{
-            app.hasEmail(email);
-        }catch (HasEmailException e){
-            System.out.println("Utilizador ja existente.");
-        }
-        //Se nao existirem nenhumas contas com esse email
-        //Leitura do nome
-        System.out.print("nome (maximo 50 caracteres): ");
-        name = scan.nextLine();
-        //Ciclo responsavel pela verificacao da password
-        while (failCount < 3 ) {
-            System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
-            pass = scan.next();
-            scan.nextLine();
-            //se password for valida
-            if (isPwValid(pass)) {
-                //Cria a conta no objeto controlador
-                app.addUser(email, name, pass);
-                System.out.println(REG_SUCCESS);
-                break;
-            } else {
-                failCount++;
-                System.out.println("Password incorrecta.");
-            }
-        }
-        if (failCount>=3) {
-            System.out.println("Registo nao realizado.");
-        }
-
-    }
-
-    private static void printMenuHelp() {
-        System.out.println("ajuda - Mostra os comandos existentes");
-        System.out.println("termina - Termina a execucao do programa");
-        System.out.println("regista - Regista um novo utilizador no programa");
-        System.out.println("entrada - Permite a entrada (\"login\") dum utilizador no programa");
-    }
-
-    private static void printLoggedInHelp() {
-        System.out.println("ajuda - Mostra os comandos existentes");
-        System.out.println("sai - Termina a sessao deste utilizador no programa");
-        System.out.println("nova - Regista uma nova deslocacao");
-        System.out.println("lista - Lista todas ou algumas deslocacoes registadas");
-        System.out.println("boleia - Regista uma boleia para uma dada deslocacao");
-        System.out.println("consulta - Lista a informacao de uma dada deslocacao");
-        System.out.println("retira - Retira uma dada boleia");
-        System.out.println("remove - elimina uma dada deslocacao");
-    }
-
-    private static void login(Scanner scan, App app) {
-        String email = scan.next();
-        scan.nextLine();
-        String pass = "";
-        try{
-            app.userExistsCheck(email);
-        }catch (UserIsNullException e){
+        if (!app.hasEmail(email)) {
             System.out.println(USER_NOT_EXIST);
         }
-        for (int i = 0; i < 3; i++) {
+        else {
+            while (failCount < 3) {
+                System.out.print("password: ");
+                password = in.next();
+                in.nextLine();
+                if (app.matchesPw(email, password)) {
+                    app.setCurrentUser(email);
+                    System.out.printf(LOGIN_SUCCESS, app.getUserLoginNum());
+                    onSessionMenu(in, app);
+                    break;
+                }
+                failCount++;
+            }
+            if (failCount >= 3) {
+                System.out.println(LOGIN_FAIL);
+            }
+        }
+        /*for (int i = 0; i < 3; i++) {
             System.out.print("password: ");
             pass = scan.next();
             scan.nextLine();
@@ -232,15 +318,70 @@ class Main {
             } catch(WrongPasswordException e) {
                 System.out.println("Password incorrecta.");
             }
+        }*/
+
+    }
+
+    private static void logout(App app) {
+        String name = app.closeSession();
+        System.out.printf(LOGOUT_MSG, name);
+    }
+
+    private static void newTravel(Scanner in, App app) {
+        in.nextLine();
+        String origin = in.nextLine();
+        String destination = in.nextLine();
+        String date = in.next();
+        String hour = in.next();
+        int duration = in.nextInt();
+        int seats = in.nextInt();
+
+        // 0 if good, 1 if invalid data, 2 if already registered
+        try {
+            app.addTravel(origin, destination, date, hour, duration, seats);
+            //System.out.println("Deslocacao "+ user.numberOfTravels()+" registada. Obrigado "+user.name()+".");
+            System.out.printf(NEW_TRAVEL_SUCCESS, app.getUserTravelsNum(), app.getCurrentUserName());
+        } catch (InvalidDateException e) {
+            System.out.println(NEW_TRAVEL_ERR1);
+        } catch (AlreadyHasEntryOnDayException e) {
+            System.out.printf(NEW_TRAVEL_ERR2, app.getCurrentUserName());
         }
-
     }
 
-    private static void logoff() {
-        System.out.println(BYEBYE);
+    private static void newRide(Scanner in, App app) {
+        String travelOwnerEmail = in.next().trim();
+        String date = in.next().trim();
+        try {
+            app.addRide(travelOwnerEmail, date);
+            System.out.println(NEW_RIDE_SUCCESS);
+        } catch (InvalidDateException e) {
+            System.out.println("Data invalida.");
+        }catch(UserIsNullException e){
+            System.out.println("Utilizador inexistente.");
+        }catch(NoRideOnDateException e){
+            System.out.println("Deslocacao nao existe.");
+        }catch(SamePersonException e){
+            //System.out.println(user.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
+        }catch(PlacedInQueueException e){
+            System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
+        } catch (AlreadyHasRideOnDayException e) {
+            //System.out.println(user.name() + " ja registou uma boleia ou deslocacao nesta data.");
+        }
     }
 
-    private static void getInfo(Scanner scan, App app) {
+    private static void removeRide(Scanner in, App app) {
+        String date = in.next();
+        try {
+            app.delRide(date);
+            System.out.println("Deslocacao removida.");
+        } catch (InvalidDateException e) {
+            System.out.println("Data invalida.");
+        } catch (NoRideOnDateException e) {
+            //System.out.println(user.name()+" nesta data nao tem registo de boleia.");
+        }
+    }
+
+    private static void getInfo(Scanner in, App app) {
        /* String lEmail = scan.next().trim();
         int[] lDate = app.dateFromString(scan.next().trim());
         UserImp lPerson = app.getPersonFromEmail(lEmail);
@@ -263,9 +404,28 @@ class Main {
                 System.out.println(MOV_NOT_EXIST);
             }
         }*/
+       String userEmailToCheck = in.next().trim();
+       String travelDate = in.next().trim();
+       in.nextLine();
+
+       try {
+           Travel travel = app.getTravel(userEmailToCheck, travelDate);
+           System.out.printf("%s\n" + //email
+                   "%s-%s\n" + //origin-destination
+                   "%s %s %d\n" + // date hour duration
+                   "Lugares vagos: %d\n" + // available seats
+                   "Boleias: \n" +
+                   "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), travel.getNumOfUsersQueueHold()); // users em espera
+       } catch (InvalidUserException e) {
+           System.out.println("Utilizador inexistente");
+       } catch (InvalidDateException e) {
+           System.out.println("Data invalida.");
+       } catch (InvalidTravelException e) {
+           System.out.println("Deslocacao nao existe.");
+       }
     }
 
-    private static void listRides(Scanner scan, App app, User personObj) {
+    private static void listing(Scanner in, App app) {
         /*String lDate = scan.nextLine().trim();
 
         int[] laDate;
@@ -286,6 +446,25 @@ class Main {
                 System.out.println(personObj.name()+" nao tem deslocacoes registadas.");
             }
         }*/
+
+        String listMode = in.next().toUpperCase();
+        in.nextLine();
+
+        if (listMode.equals("MINHAS")) {
+            Iterator<Travel> currentUserTravels = app.getUserTravels();
+            while (currentUserTravels.hasNext()) {
+                Travel travel = currentUserTravels.next();
+                System.out.printf("%s\n" + //email
+                        "%s-%s\n" + //origin-destination
+                        "%s %s %d\n" + // date hour duration
+                        "Lugares vagos: %d\n" + // available seats
+                        "Boleias: \n" +
+                        "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), travel.getNumOfUsersQueueHold());
+            }
+        }
+        else {
+            System.out.println("teste");
+        }
     }
 
     /*private static void listRidesWDate(int[] date, App app, User personObj) {
@@ -318,67 +497,23 @@ class Main {
         }
     }*/
 
-    private static void removeTravel(Scanner scan, User pObj, App app) {
-        String date = scan.next();
+    private static void removeTravel(Scanner in, App app) {
+        String date = in.next();
+        in.nextLine();
+
         try {
             app.delTravel(date);
             System.out.println("Deslocacao removida.");
-        } catch (HasRidesException e){
-            System.out.println(pObj.name()+" ja nao pode eliminar esta deslocacao.");
-        } catch(NoTravelOnDateException e){
-            System.out.println(pObj.name() + " nesta data nao tem registo de deslocacao.");
-        }
-
-    }
-
-    private static void newRide(Scanner scan, App app,User user) {
-        scan.nextLine();
-        String origin = scan.nextLine();
-
-        String destination = scan.nextLine();
-
-        String date = scan.next();
-
-        String hour = scan.next();
-
-        int duration = scan.nextInt();
-        int seats = scan.nextInt();
-
-        // 0 if good, 1 if invalid data, 2 if already registered
-        try {
-            app.addTravel(origin,destination,date,hour,duration,seats);
-            System.out.println("Deslocacao "+ user.numberOfTravels()+" registada. Obrigado "+user.name()+".");
-        } catch(AlreadyHasRideOnDayException e) {
-            System.out.println(user.name()+" ja tem uma deslocacao ou boleia nesta data.");
-        } catch(InvalidDataException e){
-            System.out.println("Dados invalidos.");
-        }
-    }
-
-    private static void takeARide(User user, Scanner scan, App app) {
-        String destEmail = scan.next().trim();
-        String date = scan.next().trim();
-        try{
-            app.addRide(destEmail,date);
-            System.out.println("Boleia registada.");
-        }catch(InvalidDateException e){
+        } catch (InvalidDateException e) {
             System.out.println("Data invalida.");
-        }catch(UserIsNullException e){
-            System.out.println("Utilizador inexistente.");
-        }catch(NoRideOnDateException e){
-            System.out.println("Deslocacao nao existe.");
-        }catch(SamePersonException e){
-            System.out.println(user.name() + " nao pode dar boleia a si propria. Boleia nao registada.");
-        }catch(PlacedInQueueException e){
-            System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
-        } catch (AlreadyHasRideOnDayException e) {
-            System.out.println(user.name() + " ja registou uma boleia ou deslocacao nesta data.");
+        } catch (InvalidTravelException e) {
+            System.out.printf("%s nesta data nao tem registo de deslocacao.\n", app.getCurrentUserName());
+        } catch (HasRidesException e) {
+            System.out.printf("%s ja nao pode eliminar esta deslocacao.\n", app.getCurrentUserName());
         }
+
     }
 
-    private static void printEnd() {
-        System.out.println(BYEBYE);
-    }
 
     /*
     private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
