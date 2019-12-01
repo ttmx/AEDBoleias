@@ -64,7 +64,7 @@ public class TravelImp implements Travel {
     }
 
     @Override
-    public Iterator getRideUsers() {
+    public Iterator<User> getRideUsers() {
         return usersForTravel.iterator();
     }
 

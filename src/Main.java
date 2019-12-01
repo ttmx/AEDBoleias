@@ -105,9 +105,6 @@ class Main {
                 case LOGIN:
                     login(in, app);
                     break;
-                case EXIT:
-                    end(app);
-                    break;
                 default:
                     System.out.println(INVALID_CMD);
                     break;
@@ -161,6 +158,7 @@ class Main {
                     break;
                 case REMOVE_RIDE:
                     removeRide(in, app);
+                    break;
                 default:
                     in.nextLine();
                     System.out.println(INVALID_CMD);
@@ -191,15 +189,6 @@ class Main {
         return input;
     }
 
-    //Leitura e a formatacao do comando
-    /*
-    public static String readCommand(Scanner scan) {
-        String lRead = "";
-        lRead = scan.next().toLowerCase();
-
-        return lRead;
-    }*/
-
     /**
      * User register on the app process
      *
@@ -211,15 +200,7 @@ class Main {
         int failCount = 0;
         //Leitura do email
         String email = in.next();
-        //String name = "";
-        //String pass = "";
-        //in.nextLine();
-        //Verificacao da existencia de um email igual no programa
-        /*try {
-            app.hasEmail(email);
-        }catch (HasEmailException e){
-            System.out.println("Utilizador ja existente.");
-        }*/
+
         if (app.hasEmail(email)) {
             System.out.println(USER_EXISTS);
         }
@@ -313,18 +294,6 @@ class Main {
                 System.out.println(LOGIN_FAIL);
             }
         }
-        /*for (int i = 0; i < 3; i++) {
-            System.out.print("password: ");
-            pass = scan.next();
-            scan.nextLine();
-            try{
-                User user = app.getUserWithPass(email,pass);
-                loggedIn(user, scan, app);
-                break;
-            } catch(WrongPasswordException e) {
-                System.out.println("Password incorrecta.");
-            }
-        }*/
 
     }
 
@@ -379,11 +348,11 @@ class Main {
         String date = in.next();
         try {
             app.delRide(date);
-            System.out.println("Deslocacao removida.");
+            System.out.println(app.getCurrentUserName()+" boleia retirada.");
         } catch (InvalidDateException e) {
             System.out.println("Data invalida.");
         } catch (NoRideOnDateException e) {
-            //System.out.println(user.name()+" nesta data nao tem registo de boleia.");
+            System.out.println(e.getMessage()+" nesta data nao tem registo de boleia.");
         }
     }
 
@@ -420,8 +389,8 @@ class Main {
                    "%s-%s\n" + //origin-destination
                    "%s %s %d\n" + // date hour duration
                    "Lugares vagos: %d\n" + // available seats
-                   "Boleias: \n" +
-                   "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), travel.getNumOfUsersQueueHold()); // users em espera
+                   "Boleias: %s\n" +
+                   "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel.getRideUsers()),travel.getNumOfUsersQueueHold()); // users em espera
        } catch (InvalidUserException e) {
            System.out.println("Utilizador inexistente");
        } catch (InvalidDateException e) {
@@ -430,6 +399,15 @@ class Main {
            System.out.println(MOV_NOT_EXIST);
        }
     }
+
+    private static String userListToString(Iterator<User> userIt){
+        String str = "";
+        while (userIt.hasNext()){
+            str += userIt.next().email()+(userIt.hasNext()?"; ":"");
+        }
+        return str;
+    }
+
 
     private static void listing(Scanner in, App app) {
         /*String lDate = scan.nextLine().trim();

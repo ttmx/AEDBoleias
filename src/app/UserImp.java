@@ -80,7 +80,7 @@ public class UserImp implements User {
 
     @Override
     public void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException {
-        if (rides.find(travelToRide.getDate()) != null)
+        if (rides.find(travelToRide.getDate()) != null || travels.find(travelToRide.getDate())!=null)
            throw new AlreadyHasRideOnDayException(name);
         rides.insert(travelToRide.getDate(), travelToRide);
     }
@@ -88,7 +88,7 @@ public class UserImp implements User {
     @Override
     public void delRide(String date) throws NoRideOnDateException {
         if (rides.find(date) == null) {
-            throw new NoRideOnDateException();
+            throw new NoRideOnDateException(name);
         }
         Travel removedRide = rides.remove(date);
         //removedRide.delUserFromTravel();

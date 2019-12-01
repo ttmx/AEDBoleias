@@ -82,7 +82,7 @@ public class AppImp implements App {
 
     @Override
     public void addTravel(String origin, String destination, String date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException {
-        if (!dateCheck(date) || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
+        if (!dateIsValid(date) || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
             throw new InvalidDateException();
         }
         if (currentUser.hasTravelOnDate(date) || currentUser.hasRideOnDate(date)) {
@@ -103,7 +103,7 @@ public class AppImp implements App {
     @Override
     public void delTravel(String date) throws InvalidDateException, InvalidTravelException, HasRidesException {
 
-        if (!dateCheck(date)) {
+        if (!dateIsValid(date)) {
             throw new InvalidDateException();
         }
         if (!currentUser.hasTravelOnDate(date)) {
@@ -118,7 +118,7 @@ public class AppImp implements App {
         currentUser.delTravel(date);
     }
 
-    private boolean dateCheck(String dateStr) {
+    private boolean dateIsValid(String dateStr) {
         String[] strArr = dateStr.split("-");
         int[] date = new int[strArr.length];
         for (int i = 0; i < strArr.length; i++){
@@ -146,16 +146,19 @@ public class AppImp implements App {
     @Override
     public void addRide(String travelUserEmail, String date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
 
-        if(!dateCheck(date))
+        if(!dateIsValid(date))
             throw new InvalidDateException();
-        if(travelUserEmail.equals(currentUser.email()))
-            throw new SamePersonException(currentUser.name());
+
         User travelUser = users.find(travelUserEmail);
         if(travelUser == null)
             throw new UserIsNullException();
 
         if(!travelUser.hasTravelOnDate(date))
             throw new NoRideOnDateException();
+
+        if(travelUserEmail.equals(currentUser.email()))
+            throw new SamePersonException(currentUser.name());
+
         Travel travel = travelUser.getTravel(date);
         currentUser.addRide(travel);
         travel.addUserForTravel(currentUser);
@@ -167,7 +170,8 @@ public class AppImp implements App {
 
     @Override
     public void delRide(String date) throws NoRideOnDateException, InvalidDateException {
-       dateCheck(date);
+       if(!dateIsValid(date))
+           throw new InvalidDateException();
        currentUser.delRide(date);
     }
 
@@ -176,7 +180,7 @@ public class AppImp implements App {
         if (users.find(travelUserEmail) == null) {
             throw new InvalidUserException();
         }
-        if (!dateCheck(date)) {
+        if (!dateIsValid(date)) {
             throw new InvalidDateException();
         }
         if (!users.find(travelUserEmail).hasTravelOnDate(date)) {
