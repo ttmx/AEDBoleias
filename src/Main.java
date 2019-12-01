@@ -25,12 +25,6 @@
 import app.*;
 import exception.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.GenericDeclaration;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 import dataStructures.Iterator;
 
@@ -373,7 +367,7 @@ class Main {
         }catch(NoRideOnDateException e){
             System.out.println(MOV_NOT_EXIST);
         }catch(SamePersonException e){
-            System.out.println(e.getMessage() + " nao pode dar boleia a si propria. Boleia nao registada.");
+            System.out.println(e.getMessage() + " nao pode dar boleia a si proprio.");
         }catch(PlacedInQueueException e){
             System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
         } catch (AlreadyHasRideOnDayException e) {

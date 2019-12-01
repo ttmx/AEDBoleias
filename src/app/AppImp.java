@@ -103,14 +103,6 @@ public class AppImp implements App {
     @Override
     public void delTravel(String date) throws InvalidDateException, InvalidTravelException, HasRidesException {
 
-        /*Travel userTravel = currentUser.travelMap().find(date);
-        if(userTravel == null)
-            throw new NoTravelOnDateException(currentUser.name());
-        if(userTravel.getRideUsers().hasNext())
-            throw new HasRidesException(currentUser.name());
-        travels.find(date).remove(currentUser.email());
-
-        currentUser.delTravel(date);*/
         if (!dateCheck(date)) {
             throw new InvalidDateException();
         }
@@ -162,7 +154,7 @@ public class AppImp implements App {
         if(travelUser == null)
             throw new UserIsNullException();
 
-        if(travelUser.hasTravelOnDate(date))
+        if(!travelUser.hasTravelOnDate(date))
             throw new NoRideOnDateException();
         Travel travel = travelUser.getTravel(date);
         currentUser.addRide(travel);

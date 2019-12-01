@@ -3,7 +3,6 @@ package app;
 import dataStructures.Iterator;
 import dataStructures.Map;
 import dataStructures.MapWithJavaClass;
-import exception.AlreadyHasRideOnDayException;
 import exception.NoRideOnDateException;
 
 public class UserImp implements User {
@@ -82,7 +81,7 @@ public class UserImp implements User {
     @Override
     public void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException {
         if (rides.find(travelToRide.getDate()) != null)
-           throw new AlreadyHasRideOnDayException();
+           throw new AlreadyHasRideOnDayException(name);
         rides.insert(travelToRide.getDate(), travelToRide);
     }
 

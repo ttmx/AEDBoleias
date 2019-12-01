@@ -2,7 +2,6 @@ package app;
 
 import dataStructures.Iterator;
 import dataStructures.Map;
-import exception.AlreadyHasRideOnDayException;
 import exception.NoRideOnDateException;
 
 import java.io.Serializable;
