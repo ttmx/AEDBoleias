@@ -4,6 +4,7 @@ import dataStructures.Iterator;
 import dataStructures.Map;
 import dataStructures.MapWithJavaClass;
 import exception.NoRideOnDateException;
+import exception.UserNotOnTravelException;
 
 public class UserImp implements User {
 
@@ -54,8 +55,8 @@ public class UserImp implements User {
     }
 
     @Override
-    public Iterator rides() {
-        return rides.iterator();
+    public Iterator<Travel> rides() {
+        return rides.values();
     }
 
     @Override
@@ -91,7 +92,11 @@ public class UserImp implements User {
             throw new NoRideOnDateException(name);
         }
         Travel removedRide = rides.remove(date);
-        //removedRide.delUserFromTravel();
+        try {
+            removedRide.delUserFromTravel(this);
+        } catch (UserNotOnTravelException e) {
+            System.out.println("Dude how did you even get here");
+        }
     }
 
     @Override

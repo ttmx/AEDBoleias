@@ -1,11 +1,10 @@
 package app;
 
-import dataStructures.Iterator;
-import dataStructures.Map;
-import dataStructures.MapWithJavaClass;
+import dataStructures.*;
 import exception.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class AppImp implements App {
 
@@ -20,6 +19,8 @@ public class AppImp implements App {
         // TODO: Change expected number of users from 0
         session = false;
         users = new MapWithJavaClass<String, User>(); // It's expected more than 10000 users
+
+        //<Date,<User,Travel>>
         travels = new MapWithJavaClass<String, Map<String,Travel>>();
     }
 
@@ -89,7 +90,9 @@ public class AppImp implements App {
             throw new AlreadyHasEntryOnDayException();
         }
         Travel travel = new TravelImp(currentUser, origin, destination, date, time, travelDuration, availableSeats);
-        travels.insert(date, new MapWithJavaClass<String, Travel>());
+        if(travels.find(date)==null){
+            travels.insert(date, new MapWithJavaClass<String, Travel>());
+        }
         Map<String, Travel> travelsUserMap = travels.find(date);
         travelsUserMap.insert(currentUser.email(), travel);
         currentUser.addTravel(travel);
@@ -221,6 +224,29 @@ public class AppImp implements App {
     }
 
     @Override
+    public Iterator<Travel> getUserTravels(String email) throws UserIsNullException {
+        User toReturn = users.find(email);
+        if(toReturn==null)
+            throw new UserIsNullException();
+        return toReturn.travels();
+    }
+
+    @Override
+    public Iterator<Travel> getUserRides() {
+        return currentUser.rides();
+    }
+
+    @Override
+    public Iterator<String> usersWithTravelOnDate(String date) throws NoRideOnDateException,InvalidDateException{
+        if(!dateIsValid(date))
+            throw new InvalidDateException();
+        Map<String,Travel> trMap = travels.find(date);
+        if(trMap==null)
+            throw new NoRideOnDateException();
+        return trMap.keys();
+    }
+
+    @Override
     public void store() {
         try{
             ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream("./App.ser"));
@@ -231,6 +257,7 @@ public class AppImp implements App {
             e.printStackTrace();
         }
     }
+
 
 
     /*    private UserImp[] accounts;

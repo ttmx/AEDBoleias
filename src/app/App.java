@@ -28,6 +28,7 @@ public interface App extends Serializable {
     Iterator<Travel> getAppRegisteredTravels();
     Iterator<Travel> getAppRegisteredTravelsOnDate(String date);
     Iterator<Travel> getUserTravels();
+    Iterator<Travel> getUserTravels(String user) throws UserIsNullException;
 
     static App load() {
         App app = null;
@@ -47,4 +48,8 @@ public interface App extends Serializable {
 
 
     void store();
+
+    Iterator<Travel> getUserRides();
+
+    Iterator<String> usersWithTravelOnDate(String date) throws NoRideOnDateException, InvalidDateException;
 }

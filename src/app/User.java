@@ -7,7 +7,7 @@ import exception.NoRideOnDateException;
 import java.io.Serializable;
 
 /**
- * @author Rodrigo Rosa
+ * @author Rodrigo Rosa and Tiago Teles
  */
 public interface User extends Serializable{
     String name();
@@ -16,7 +16,7 @@ public interface User extends Serializable{
     int loginNumber();
     int numberOfTravels();
     Iterator<Travel> travels();
-    Iterator rides();
+    Iterator<Travel> rides();
     Map<String,Travel> travelMap();
     Map<String,Travel> rideMap();
     void incLoginNum();

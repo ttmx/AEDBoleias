@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author Rodrigo Rosa
  */
 public interface Travel extends Serializable {
-    User getTravelAuthor();
+    String getTravelDriverEmail();
     String getOrigin();
     String getDestination();
     String getDate();

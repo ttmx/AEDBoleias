@@ -23,6 +23,7 @@
  */
 
 import app.*;
+import dataStructures.NoElementException;
 import exception.*;
 
 import java.util.Scanner;
@@ -385,14 +386,9 @@ class Main {
 
        try {
            Travel travel = app.getTravel(userEmailToCheck, travelDate);
-           System.out.printf("%s\n" + //email
-                   "%s-%s\n" + //origin-destination
-                   "%s %s %d\n" + // date hour duration
-                   "Lugares vagos: %d\n" + // available seats
-                   "Boleias: %s\n" +
-                   "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel.getRideUsers()),travel.getNumOfUsersQueueHold()); // users em espera
+           printTravel(travel);
        } catch (InvalidUserException e) {
-           System.out.println("Utilizador inexistente");
+           System.out.println("Utilizador inexistente.");
        } catch (InvalidDateException e) {
            System.out.println("Data invalida.");
        } catch (InvalidTravelException e) {
@@ -400,12 +396,17 @@ class Main {
        }
     }
 
-    private static String userListToString(Iterator<User> userIt){
-        String str = "";
-        while (userIt.hasNext()){
-            str += userIt.next().email()+(userIt.hasNext()?"; ":"");
+    private static String userListToString(Travel travel){
+        try{
+            Iterator<User> userIt = travel.getRideUsers();
+            String str = "Boleias: ";
+            while (userIt.hasNext()){
+                str += userIt.next().email()+(userIt.hasNext()?"; ":"");
+            }
+            return str;
+        }catch (NoElementException e){
+            return "Sem boleias registadas.";
         }
-        return str;
     }
 
 
@@ -433,22 +434,71 @@ class Main {
 
         String listMode = in.next().toUpperCase();
         in.nextLine();
+        switch(listMode.toUpperCase()){
+            //
+            case "MINHAS":
+                listTravels(app.getUserTravels());
+                break;
+            case "TODAS":
+                System.out.println("Todas listing teste");
+                break;
+            case "BOLEIAS":
+                listSelfRides(app.getUserRides());
+                break;
+            default:
+                if(listMode.split("-").length!=3){
+                    try{
+                        listTravels(app.getUserTravels(listMode));
+                    }catch(UserIsNullException e) {
+                        System.out.println("Nao existe o utilizador dado.");
+                    }
+                }else{
+                    try {
+                        Iterator<String> users = app.usersWithTravelOnDate(listMode);
+                        while (users.hasNext()) {
+                            System.out.println(users.next() + "\n");
+                        }
+                    }catch (NoRideOnDateException e){
+                        System.out.println("Sem deslocacoes.");
+                    }catch (InvalidDateException e){
+                        System.out.println("Data invalida.");
+                    }
+                }
+                break;
+        }
+    }
+    private static void listTravels(Iterator<Travel> travels){
+        if(!travels.hasNext()){
+            System.out.println("Sem deslocacoes.");
+            System.out.print("\n");
+        }
+        while (travels.hasNext()) {
+            Travel travel = travels.next();
+            printTravel(travel);
+        }
+    }
+    private static void printTravel(Travel travel){
+        System.out.printf("%s\n" + //email
+                "%s-%s\n" + //origin-destination
+                "%s %s %d\n" + // date hour duration
+                "Lugares vagos: %d\n" + // available seats
+                "%s\n" +
+                "Em espera: %d\n", travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel), travel.getNumOfUsersQueueHold());
+    }
+    private static void listSelfRides(Iterator<Travel> rides){
+        if(!rides.hasNext()){
+            System.out.println("Sem deslocacoes.");
+        }
+        while (rides.hasNext()) {
+            Travel travel = rides.next();
+            printSelfRide(travel);
+        }
+    }
 
-        if (listMode.equals("MINHAS")) {
-            Iterator<Travel> currentUserTravels = app.getUserTravels();
-            while (currentUserTravels.hasNext()) {
-                Travel travel = currentUserTravels.next();
-                System.out.printf("%s\n" + //email
-                        "%s-%s\n" + //origin-destination
-                        "%s %s %d\n" + // date hour duration
-                        "Lugares vagos: %d\n" + // available seats
-                        "Boleias: \n" +
-                        "Em espera: %d\n", app.getCurrentUserId(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), travel.getNumOfUsersQueueHold());
-            }
-        }
-        else {
-            System.out.println("teste");
-        }
+    private static void printSelfRide(Travel travel) {
+        System.out.printf("%s\n" + //email
+                "%s-%s\n" + //origin-destination
+                "%s %s %d\n\n" , travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration());
     }
 
     /*private static void listRidesWDate(int[] date, App app, User personObj) {

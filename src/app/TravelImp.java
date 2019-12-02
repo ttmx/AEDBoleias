@@ -29,8 +29,8 @@ public class TravelImp implements Travel {
     }
 
     @Override
-    public User getTravelAuthor() {
-        return travelAuthor;
+    public String getTravelDriverEmail() {
+        return travelAuthor.email();
     }
 
     @Override
