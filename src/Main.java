@@ -440,7 +440,10 @@ class Main {
                 listTravels(app.getUserTravels());
                 break;
             case "TODAS":
-                System.out.println("Todas listing teste");
+                Iterator<String> allTravels = app.allRideMinInfo();
+                while(allTravels.hasNext()){
+                    System.out.println(allTravels.next()+"\n");
+                }
                 break;
             case "BOLEIAS":
                 listSelfRides(app.getUserRides());

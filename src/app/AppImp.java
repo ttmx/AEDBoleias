@@ -4,7 +4,6 @@ import dataStructures.*;
 import exception.*;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class AppImp implements App {
 
@@ -83,7 +82,7 @@ public class AppImp implements App {
 
     @Override
     public void addTravel(String origin, String destination, String date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException {
-        if (!dateIsValid(date) || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
+        if (dateIsInvalid(date) || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
             throw new InvalidDateException();
         }
         if (currentUser.hasTravelOnDate(date) || currentUser.hasRideOnDate(date)) {
@@ -106,7 +105,7 @@ public class AppImp implements App {
     @Override
     public void delTravel(String date) throws InvalidDateException, InvalidTravelException, HasRidesException {
 
-        if (!dateIsValid(date)) {
+        if (dateIsInvalid(date)) {
             throw new InvalidDateException();
         }
         if (!currentUser.hasTravelOnDate(date)) {
@@ -121,7 +120,7 @@ public class AppImp implements App {
         currentUser.delTravel(date);
     }
 
-    private boolean dateIsValid(String dateStr) {
+    private boolean dateIsInvalid(String dateStr) {
         String[] strArr = dateStr.split("-");
         int[] date = new int[strArr.length];
         for (int i = 0; i < strArr.length; i++){
@@ -143,13 +142,13 @@ public class AppImp implements App {
         } else {
             niceDate = false;
         }
-        return niceDate;
+        return !niceDate;
     }
 
     @Override
     public void addRide(String travelUserEmail, String date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
 
-        if(!dateIsValid(date))
+        if(dateIsInvalid(date))
             throw new InvalidDateException();
 
         User travelUser = users.find(travelUserEmail);
@@ -173,7 +172,7 @@ public class AppImp implements App {
 
     @Override
     public void delRide(String date) throws NoRideOnDateException, InvalidDateException {
-       if(!dateIsValid(date))
+       if(dateIsInvalid(date))
            throw new InvalidDateException();
        currentUser.delRide(date);
     }
@@ -183,7 +182,7 @@ public class AppImp implements App {
         if (users.find(travelUserEmail) == null) {
             throw new InvalidUserException();
         }
-        if (!dateIsValid(date)) {
+        if (dateIsInvalid(date)) {
             throw new InvalidDateException();
         }
         if (!users.find(travelUserEmail).hasTravelOnDate(date)) {
@@ -238,12 +237,29 @@ public class AppImp implements App {
 
     @Override
     public Iterator<String> usersWithTravelOnDate(String date) throws NoRideOnDateException,InvalidDateException{
-        if(!dateIsValid(date))
+        if(dateIsInvalid(date))
             throw new InvalidDateException();
         Map<String,Travel> trMap = travels.find(date);
         if(trMap==null)
             throw new NoRideOnDateException();
         return trMap.keys();
+    }
+
+    @Override
+    public Iterator<String> allRideMinInfo() {
+        Iterator<Map<String,Travel>> allMaps= travels.values();
+        Iterator<Travel> smallTravels;
+        //Sorted map not working :( I can't fix
+        List<String> allStrings = new Array<String>();
+        Travel travel;
+        while(allMaps.hasNext()){
+            smallTravels = allMaps.next().values();
+            while(smallTravels.hasNext()){
+                travel = smallTravels.next();
+                allStrings.addLast(travel.getDate()+" "+travel.getTravelDriverEmail());
+            }
+        }
+        return allStrings.iterator();
     }
 
     @Override

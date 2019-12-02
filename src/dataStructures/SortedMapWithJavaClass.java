@@ -25,8 +25,8 @@ public class SortedMapWithJavaClass<K extends Comparable<K>, V> implements Sorte
 
 	@Override
 	public Iterator<K> keys() throws NoElementException {
-		// TODO Auto-generated method stub
-		return null;
+		K[] k = (K[]) elementos.keySet().toArray();
+		return new ArrayIterator<K>(k,k.length);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class SortedMapWithJavaClass<K extends Comparable<K>, V> implements Sorte
 
 	@Override
 	public V insert(K key, V value) {
-		// TODO Auto-generated method stub
-		return null;
+		elementos.put(key,value);
+		return value;
 	}
 
 	@Override
