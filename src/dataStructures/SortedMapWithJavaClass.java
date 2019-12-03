@@ -3,36 +3,33 @@ package dataStructures;
 public class SortedMapWithJavaClass<K extends Comparable<K>, V> implements SortedMap<K, V> {
 
 	protected java.util.SortedMap<K,V> elementos;
-	protected int capPrevista;
 
 
-	public SortedMapWithJavaClass(int capPrevista) {
+	public SortedMapWithJavaClass() {
 		elementos = new java.util.TreeMap<K,V>();
-		this.capPrevista = capPrevista;
 	}
 	
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
-		return false;
+		return elementos.isEmpty();
 	}
 
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
-		return 0;
+		return elementos.size();
 	}
 
 	@Override
 	public Iterator<K> keys() throws NoElementException {
-		K[] k = (K[]) elementos.keySet().toArray();
-		return new ArrayIterator<K>(k,k.length);
+		return new IteratorWithJavaClass<>(elementos.keySet().iterator());
 	}
 
 	@Override
 	public Iterator<V> values() throws NoElementException {
 		// TODO Auto-generated method stub
-		return null;
+		return new IteratorWithJavaClass<>(elementos.values().iterator());
 	}
 
 	@Override
@@ -44,19 +41,18 @@ public class SortedMapWithJavaClass<K extends Comparable<K>, V> implements Sorte
 	@Override
 	public V find(K key) {
 		// TODO Auto-generated method stub
-		return null;
+		return elementos.get(key);
 	}
 
 	@Override
 	public V insert(K key, V value) {
-		elementos.put(key,value);
-		return value;
+		return elementos.put(key,value);
 	}
 
 	@Override
 	public V remove(K key) {
 		// TODO Auto-generated method stub
-		return null;
+		return elementos.remove(key);
 	}
 
 	@Override

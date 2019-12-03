@@ -13,10 +13,12 @@ public class BasicDate implements Date {
 	private static final int MAXMONTH = 12;
 	private static final int MINMONTH = 1;
 
+
 	private static final int NUM_FIELDS = 3;
 
 	private int[] rawDate;
 
+	private String string;
 	/***
 	 * Builds a new raw date object.
 	 * 
@@ -24,6 +26,7 @@ public class BasicDate implements Date {
 	 *             numbers representable as integers.
 	 */
 	public BasicDate(String date) {
+		string = date;
 		String[] split = date.split("-");
 		rawDate = new int[NUM_FIELDS];
 
@@ -130,7 +133,7 @@ public class BasicDate implements Date {
 		int behind = -1;
 		int equal = 0;
 		int front = 1;
-		
+
 		if(getYear() > o.getYear())
 			return front;
 		if(getYear()< o.getYear())
@@ -146,16 +149,19 @@ public class BasicDate implements Date {
 		if(getDay()< o.getDay())
 			return behind;
 		return equal;
-		
 
-					
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Date)
-			return (getYear() == ((Date) obj).getYear() && getMonth()==((Date) obj).getMonth() && getDay()==((Date) obj).getDay());
-		else
+		if(obj instanceof Date) {
+			return (getYear() == ((Date) obj).getYear() && getMonth() == ((Date) obj).getMonth() && getDay() == ((Date) obj).getDay());
+		}else{
 			return false;
+		}
+	}
+	@Override
+	public String stringDate(){
+		return string;
 	}
 }

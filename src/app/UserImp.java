@@ -1,8 +1,6 @@
 package app;
 
-import dataStructures.Iterator;
-import dataStructures.Map;
-import dataStructures.MapWithJavaClass;
+import dataStructures.*;
 import exception.NoRideOnDateException;
 import exception.UserNotOnTravelException;
 
@@ -12,16 +10,16 @@ public class UserImp implements User {
     private String name;
     private String password;
     private int loginNumber;
-    private Map<String, Travel> travels;
-    private Map<String, Travel> rides;
+    private Map<Date, Travel> travels;
+    private Map<Date, Travel> rides;
 
     public UserImp(String email, String name, String password) {
         this.email= email;
         this.name = name;
         this.password = password;
         // TODO: Change the expected value from the maps
-        travels = new MapWithJavaClass<String, Travel>(0);
-        rides = new MapWithJavaClass<String, Travel>(0);
+        travels = new SortedMapWithJavaClass<Date,Travel>();
+        rides = new SortedMapWithJavaClass<Date, Travel>();
     }
 
     @Override
@@ -70,12 +68,12 @@ public class UserImp implements User {
     }
 
     @Override
-    public void delTravel(String date) {
+    public void delTravel(Date date) {
         travels.remove(date);
     }
 
     @Override
-    public Travel getTravel(String date) {
+    public Travel getTravel(Date date) {
         return travels.find(date);
     }
 
@@ -87,7 +85,7 @@ public class UserImp implements User {
     }
 
     @Override
-    public void delRide(String date) throws NoRideOnDateException {
+    public void delRide(Date date) throws NoRideOnDateException {
         if (rides.find(date) == null) {
             throw new NoRideOnDateException(name);
         }
@@ -110,12 +108,12 @@ public class UserImp implements User {
     }
 
     @Override
-    public boolean hasTravelOnDate(String date) {
+    public boolean hasTravelOnDate(Date date) {
         return travels.find(date) != null;
     }
 
     @Override
-    public boolean hasRideOnDate(String date) {
+    public boolean hasRideOnDate(Date date) {
         return rides.find(date) != null;
     }
 

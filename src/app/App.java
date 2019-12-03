@@ -1,4 +1,5 @@
 package app;
+import dataStructures.Date;
 import dataStructures.Iterator;
 import exception.*;
 
@@ -18,15 +19,15 @@ public interface App extends Serializable {
     void setCurrentUser(String email);
     int getUserLoginNum();
     String closeSession();
-    void addTravel(String origin, String destination, String date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException;
+    void addTravel(String origin, String destination, Date date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException;
     int getUserTravelsNum();
-    void delTravel(String date) throws InvalidDateException, InvalidTravelException, HasRidesException;
-    void addRide(String travelUserEmail, String date) throws InvalidDateException,SamePersonException,PlacedInQueueException,NoRideOnDateException,UserIsNullException, AlreadyHasRideOnDayException;
-    void delRide(String date) throws NoRideOnDateException, InvalidDateException;
-    Travel getTravel(String travelUserEmail, String date) throws InvalidUserException, InvalidDateException, InvalidTravelException;
+    void delTravel(Date date) throws InvalidDateException, InvalidTravelException, HasRidesException;
+    void addRide(String travelUserEmail, Date date) throws InvalidDateException,SamePersonException,PlacedInQueueException,NoRideOnDateException,UserIsNullException, AlreadyHasRideOnDayException;
+    void delRide(Date date) throws NoRideOnDateException, InvalidDateException;
+    Travel getTravel(String travelUserEmail, Date date) throws InvalidUserException, InvalidDateException, InvalidTravelException;
     User getUserWithPass(String email, String pass) throws WrongPasswordException;
     Iterator<Travel> getAppRegisteredTravels();
-    Iterator<Travel> getAppRegisteredTravelsOnDate(String date);
+    Iterator<Travel> getAppRegisteredTravelsOnDate(Date date);
     Iterator<Travel> getUserTravels();
     Iterator<Travel> getUserTravels(String user) throws UserIsNullException;
 

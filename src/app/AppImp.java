@@ -12,7 +12,7 @@ public class AppImp implements App {
     private boolean session;
     private User currentUser;
     private Map<String, User> users;
-    private Map<String, Map<String,Travel>> travels;
+    private SortedMap<Date, SortedMap<String,Travel>> travels;
 
     public AppImp() {
         // TODO: Change expected number of users from 0
@@ -20,7 +20,7 @@ public class AppImp implements App {
         users = new MapWithJavaClass<String, User>(); // It's expected more than 10000 users
 
         //<Date,<User,Travel>>
-        travels = new MapWithJavaClass<String, Map<String,Travel>>();
+        travels = new SortedMapWithJavaClass<Date, SortedMap<String,Travel>>();
     }
 
 
@@ -81,8 +81,8 @@ public class AppImp implements App {
     }
 
     @Override
-    public void addTravel(String origin, String destination, String date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException {
-        if (dateIsInvalid(date) || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
+    public void addTravel(String origin, String destination, Date date, String time, int travelDuration, int availableSeats) throws InvalidDateException, AlreadyHasEntryOnDayException {
+        if (!date.isValid() || travelDuration <= 0 || availableSeats > 10 || availableSeats <= 0) {
             throw new InvalidDateException();
         }
         if (currentUser.hasTravelOnDate(date) || currentUser.hasRideOnDate(date)) {
@@ -90,8 +90,9 @@ public class AppImp implements App {
         }
         Travel travel = new TravelImp(currentUser, origin, destination, date, time, travelDuration, availableSeats);
         if(travels.find(date)==null){
-            travels.insert(date, new MapWithJavaClass<String, Travel>());
+            travels.insert(date, new SortedMapWithJavaClass<String, Travel>());
         }
+
         Map<String, Travel> travelsUserMap = travels.find(date);
         travelsUserMap.insert(currentUser.email(), travel);
         currentUser.addTravel(travel);
@@ -103,9 +104,9 @@ public class AppImp implements App {
     }
 
     @Override
-    public void delTravel(String date) throws InvalidDateException, InvalidTravelException, HasRidesException {
+    public void delTravel(Date date) throws InvalidDateException, InvalidTravelException, HasRidesException {
 
-        if (dateIsInvalid(date)) {
+        if (!date.isValid()) {
             throw new InvalidDateException();
         }
         if (!currentUser.hasTravelOnDate(date)) {
@@ -120,6 +121,7 @@ public class AppImp implements App {
         currentUser.delTravel(date);
     }
 
+    /*
     private boolean dateIsInvalid(String dateStr) {
         String[] strArr = dateStr.split("-");
         int[] date = new int[strArr.length];
@@ -143,12 +145,12 @@ public class AppImp implements App {
             niceDate = false;
         }
         return !niceDate;
-    }
+    }*/
 
     @Override
-    public void addRide(String travelUserEmail, String date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
+    public void addRide(String travelUserEmail, Date date) throws InvalidDateException, SamePersonException, PlacedInQueueException, NoRideOnDateException, UserIsNullException, AlreadyHasRideOnDayException{
 
-        if(dateIsInvalid(date))
+        if(!date.isValid())
             throw new InvalidDateException();
 
         User travelUser = users.find(travelUserEmail);
@@ -171,18 +173,18 @@ public class AppImp implements App {
     }
 
     @Override
-    public void delRide(String date) throws NoRideOnDateException, InvalidDateException {
-       if(dateIsInvalid(date))
+    public void delRide(Date date) throws NoRideOnDateException, InvalidDateException {
+       if(!date.isValid())
            throw new InvalidDateException();
        currentUser.delRide(date);
     }
 
     @Override
-    public Travel getTravel(String travelUserEmail, String date) throws InvalidUserException, InvalidDateException, InvalidTravelException {
+    public Travel getTravel(String travelUserEmail, Date date) throws InvalidUserException, InvalidDateException, InvalidTravelException {
         if (users.find(travelUserEmail) == null) {
             throw new InvalidUserException();
         }
-        if (dateIsInvalid(date)) {
+        if (!date.isValid()) {
             throw new InvalidDateException();
         }
         if (!users.find(travelUserEmail).hasTravelOnDate(date)) {
@@ -213,7 +215,7 @@ public class AppImp implements App {
     }
 
     @Override
-    public Iterator<Travel> getAppRegisteredTravelsOnDate(String date) {
+    public Iterator<Travel> getAppRegisteredTravelsOnDate(Date date) {
         return null;
     }
 
@@ -236,8 +238,9 @@ public class AppImp implements App {
     }
 
     @Override
-    public Iterator<String> usersWithTravelOnDate(String date) throws NoRideOnDateException,InvalidDateException{
-        if(dateIsInvalid(date))
+    public Iterator<String> usersWithTravelOnDate(String dateStr) throws NoRideOnDateException,InvalidDateException{
+        Date date = new BasicDate(dateStr);
+        if(!date.isValid())
             throw new InvalidDateException();
         Map<String,Travel> trMap = travels.find(date);
         if(trMap==null)
@@ -247,16 +250,16 @@ public class AppImp implements App {
 
     @Override
     public Iterator<String> allRideMinInfo() {
-        Iterator<Map<String,Travel>> allMaps= travels.values();
+        Iterator<SortedMap<String,Travel>> allMaps= travels.values();
         Iterator<Travel> smallTravels;
-        //Sorted map not working :( I can't fix
         List<String> allStrings = new Array<String>();
         Travel travel;
         while(allMaps.hasNext()){
             smallTravels = allMaps.next().values();
             while(smallTravels.hasNext()){
                 travel = smallTravels.next();
-                allStrings.addLast(travel.getDate()+" "+travel.getTravelDriverEmail());
+                if(travel.getNumOfAvailableSeats()>0)
+                    allStrings.addLast(travel.getDate().stringDate()+" "+travel.getTravelDriverEmail());
             }
         }
         return allStrings.iterator();

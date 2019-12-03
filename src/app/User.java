@@ -1,5 +1,6 @@
 package app;
 
+import dataStructures.Date;
 import dataStructures.Iterator;
 import dataStructures.Map;
 import exception.NoRideOnDateException;
@@ -21,10 +22,10 @@ public interface User extends Serializable{
     Map<String,Travel> rideMap();
     void incLoginNum();
     void addTravel(Travel travel); // Missing parameters
-    void delTravel(String date); // Missing parameters
-    Travel getTravel(String date);
+    void delTravel(Date date); // Missing parameters
+    Travel getTravel(Date date);
     void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException; // Missing parameters
-    void delRide(String date) throws NoRideOnDateException; // Missing parameters
-    boolean hasTravelOnDate(String date);
-    boolean hasRideOnDate(String date);
+    void delRide(Date date) throws NoRideOnDateException; // Missing parameters
+    boolean hasTravelOnDate(Date date);
+    boolean hasRideOnDate(Date date);
 }

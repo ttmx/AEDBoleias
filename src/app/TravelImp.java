@@ -7,14 +7,14 @@ public class TravelImp implements Travel {
     private User travelAuthor;
     private String origin;
     private String destination;
-    private String date;
+    private Date date;
     private String time;
     private int duration;
     private int seatCap;
     private List<User> usersForTravel;
     private Queue<User> usersInQueueForTravel;
 
-    public TravelImp(User travelAuthor, String origin, String destination, String date,
+    public TravelImp(User travelAuthor, String origin, String destination, Date date,
                      String time, int duration, int seatCap) {
         this.travelAuthor = travelAuthor;
         this.origin = origin;
@@ -44,7 +44,7 @@ public class TravelImp implements Travel {
     }
 
     @Override
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -90,6 +90,14 @@ public class TravelImp implements Travel {
         if(index==-1)
             throw new UserNotOnTravelException();
         usersForTravel.remove(index);
+        while(!usersInQueueForTravel.isEmpty()){
+            User u = usersInQueueForTravel.dequeue();
+            if(!u.hasTravelOnDate(date)&&!u.hasRideOnDate(date)) {
+                addUserForTravel(u);
+                break;
+            }
+        }
+
     }
 
     @Override
@@ -97,44 +105,4 @@ public class TravelImp implements Travel {
         return usersForTravel.size() > 0;
     }
 
-    /*
-    public int getHour() {
-    	return hour;
-    }
-    public String getOrigin() {
-    	return origin;
-    }
-    public String getDestination() {
-        return destination;
-    }
-
-    public int[] getDate() {
-        return date;
-    }
-
-    public float getDuration() {
-        return duration;
-    }
-
-    public int getSeats() {
-        return seats;
-    }
-    public int getEmptySeats() {
-    	return emptySeats;
-    }
-
-    public UserImp getDriver() {
-        return driver;
-    }
-    public int getDateNumber(){
-        return dateAsNumber;
-    }
-    public boolean incPerson() {
-    	boolean temp = false;
-    	if(emptySeats > 0) {
-            emptySeats--;
-    		temp = true;
-    	}
-    	return temp;
-    }*/
 }

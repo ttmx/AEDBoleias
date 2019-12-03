@@ -23,6 +23,8 @@
  */
 
 import app.*;
+import dataStructures.BasicDate;
+import dataStructures.Date;
 import dataStructures.NoElementException;
 import exception.*;
 
@@ -307,7 +309,7 @@ class Main {
         in.nextLine();
         String origin = in.nextLine();
         String destination = in.nextLine();
-        String date = in.next();
+        Date date = new BasicDate(in.next().trim());
         String hour = in.next();
         int duration = in.nextInt();
         int seats = in.nextInt();
@@ -326,7 +328,7 @@ class Main {
 
     private static void newRide(Scanner in, App app) {
         String travelOwnerEmail = in.next().trim();
-        String date = in.next().trim();
+        Date date = new BasicDate(in.next().trim());
         try {
             app.addRide(travelOwnerEmail, date);
             System.out.println(NEW_RIDE_SUCCESS);
@@ -346,7 +348,7 @@ class Main {
     }
 
     private static void removeRide(Scanner in, App app) {
-        String date = in.next();
+        Date date = new BasicDate(in.next().trim());
         try {
             app.delRide(date);
             System.out.println(app.getCurrentUserName()+" boleia retirada.");
@@ -358,35 +360,14 @@ class Main {
     }
 
     private static void getInfo(Scanner in, App app) {
-       /* String lEmail = scan.next().trim();
-        int[] lDate = app.dateFromString(scan.next().trim());
-        UserImp lPerson = app.getPersonFromEmail(lEmail);
-        app.sortAccounts();
-        boolean hasFound = false;
-        if (lPerson == null) {
-            System.out.println(MOV_NOT_EXIST);
-        } else {
-            RideIterator lRI = lPerson.createRideIterator();
-            Itinerary lRide;
-            if (lRI.hasNext()) {
-                do {
-                    lRide = lRI.nextRide();
-                    if (lRide.getDate()[0] == lDate[0] && lRide.getDate()[1] == lDate[1]&& lRide.getDate()[2] == lDate[2]) {
-                        printRideInfo(lRide, lPerson, false, true);
-                        hasFound = true;
-                    }
-                } while (lRI.hasNext());
-            } if(!hasFound){
-                System.out.println(MOV_NOT_EXIST);
-            }
-        }*/
        String userEmailToCheck = in.next().trim();
-       String travelDate = in.next().trim();
+       Date travelDate = new BasicDate(in.next().trim());
        in.nextLine();
 
        try {
            Travel travel = app.getTravel(userEmailToCheck, travelDate);
            printTravel(travel);
+
        } catch (InvalidUserException e) {
            System.out.println("Utilizador inexistente.");
        } catch (InvalidDateException e) {
@@ -432,7 +413,8 @@ class Main {
             }
         }*/
 
-        String listMode = in.next().toUpperCase();
+        String username = in.next().trim();
+        String listMode = username.toUpperCase();
         in.nextLine();
         switch(listMode.toUpperCase()){
             //
@@ -451,7 +433,7 @@ class Main {
             default:
                 if(listMode.split("-").length!=3){
                     try{
-                        listTravels(app.getUserTravels(listMode));
+                        listSelfRides(app.getUserTravels(username));
                     }catch(UserIsNullException e) {
                         System.out.println("Nao existe o utilizador dado.");
                     }
@@ -473,11 +455,11 @@ class Main {
     private static void listTravels(Iterator<Travel> travels){
         if(!travels.hasNext()){
             System.out.println("Sem deslocacoes.");
-            System.out.print("\n");
         }
         while (travels.hasNext()) {
             Travel travel = travels.next();
             printTravel(travel);
+            System.out.println();
         }
     }
     private static void printTravel(Travel travel){
@@ -486,7 +468,7 @@ class Main {
                 "%s %s %d\n" + // date hour duration
                 "Lugares vagos: %d\n" + // available seats
                 "%s\n" +
-                "Em espera: %d\n", travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel), travel.getNumOfUsersQueueHold());
+                "Em espera: %d\n", travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate().stringDate(), intifyTime(travel.getTime()), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel), travel.getNumOfUsersQueueHold());
     }
     private static void listSelfRides(Iterator<Travel> rides){
         if(!rides.hasNext()){
@@ -497,45 +479,19 @@ class Main {
             printSelfRide(travel);
         }
     }
+    private static String intifyTime(String str){
+        String[] ints = str.split(":");
+        return Integer.parseInt(ints[0])+":"+Integer.parseInt(ints[1]);
+    }
 
     private static void printSelfRide(Travel travel) {
         System.out.printf("%s\n" + //email
                 "%s-%s\n" + //origin-destination
-                "%s %s %d\n\n" , travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate(), travel.getTime(), travel.getDuration());
+                "%s %s %d\n\n" , travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate().stringDate(), intifyTime(travel.getTime()), travel.getDuration());
     }
 
-    /*private static void listRidesWDate(int[] date, App app, User personObj) {
-        int userCount = app.getUserCount();
-        UserImp person = null;
-        boolean hasFound = false;
-        if(!personObj.isDateValid(date)) {
-        	
-        	System.out.println("Data invalida.");      	
-        }else{
-            for (int i = 0; i < userCount; i++) {
-            	app.sortAccounts();
-                person = app.getPersonFromIndex(i);
-                
-                RideIterator iterator = person.createRideIterator();
-                iterator.sort();
-                while (iterator.hasNext()) {
-                    Itinerary lRide = iterator.nextRide();
-                    if (date[0] == lRide.getDate()[0] && date[1] == lRide.getDate()[1] && date[2] == lRide.getDate()[2]) {
-                        printRideInfo(lRide, person, true, false);
-                        System.out.print("\n");
-                        hasFound = true;
-                    }
-                }
-                 
-            }
-            if(!hasFound) {
-            	System.out.println(personObj.name() + " nao existem deslocacoes registadas para " + date[0]+"-"+ date[1]+"-"+ date[2]+".");
-            }
-        }
-    }*/
-
     private static void removeTravel(Scanner in, App app) {
-        String date = in.next();
+        Date date = new BasicDate(in.next());
         in.nextLine();
 
         try {
@@ -550,24 +506,5 @@ class Main {
         }
 
     }
-
-
-    /*
-    private static void printRideInfo(Itinerary ride, User person, boolean needDriver, boolean freeSpots) {
-        if (needDriver) {
-            System.out.println(person.email());
-        }
-        System.out.println(ride.getOrigin());
-        System.out.println(ride.getDestination());
-        System.out.print(ride.getDate()[0] + "-" + ride.getDate()[1] + "-" + ride.getDate()[2]);
-        System.out.print(" " + ride.getHour());
-        System.out.print(" " + ride.getDuration());
-        System.out.println(" " + ride.getSeats());
-        if (!freeSpots) {
-            System.out.println("Boleias registadas: " + (ride.getSeats() - ride.getEmptySeats()));
-        } else {
-            System.out.println("Lugares vagos: " + ride.getEmptySeats());
-        }
-    }*/
 
 }

@@ -9,4 +9,5 @@ public interface Date extends Serializable, Comparable<Date> {
     int getMonth();
     int getDay();
     int compareTo(Date o);
+    String stringDate();
 }

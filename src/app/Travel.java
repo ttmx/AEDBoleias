@@ -1,5 +1,6 @@
 package app;
 
+import dataStructures.Date;
 import dataStructures.Iterator;
 import exception.UserNotOnTravelException;
 
@@ -12,7 +13,7 @@ public interface Travel extends Serializable {
     String getTravelDriverEmail();
     String getOrigin();
     String getDestination();
-    String getDate();
+    Date getDate();
     String getTime();
     int getDuration();
     int getNumOfAvailableSeats();
