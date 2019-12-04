@@ -52,7 +52,7 @@ public interface App extends Serializable {
 
     Iterator<Travel> getUserRides();
 
-    Iterator<String> usersWithTravelOnDate(String date) throws NoRideOnDateException, InvalidDateException;
+    Iterator<String> usersWithFreeTravelOnDate(String date) throws NoRideOnDateException, InvalidDateException;
 
     Iterator<String> allRideMinInfo();
 }

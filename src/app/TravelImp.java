@@ -25,7 +25,6 @@ public class TravelImp implements Travel {
         this.seatCap = seatCap;
         this.usersForTravel = new Array<User>();
         this.usersInQueueForTravel = new QueueInArray<User>(); // ou QueueInList idk?
-        //dateAsNumber = date[0]+date[1]*100+date[2]*10000;
     }
 
     @Override
@@ -76,10 +75,9 @@ public class TravelImp implements Travel {
     // Some review and needs throw.
     @Override
     public void addUserForTravel(User user) {
-        if (usersForTravel.size() == seatCap) {
+        if (usersForTravel.size() >= seatCap) {
             usersInQueueForTravel.enqueue(user);
-        }
-        else {
+        } else {
             usersForTravel.addLast(user);
         }
     }
@@ -90,13 +88,13 @@ public class TravelImp implements Travel {
         if(index==-1)
             throw new UserNotOnTravelException();
         usersForTravel.remove(index);
-        while(!usersInQueueForTravel.isEmpty()){
+        /*while(!usersInQueueForTravel.isEmpty()){
             User u = usersInQueueForTravel.dequeue();
             if(!u.hasTravelOnDate(date)&&!u.hasRideOnDate(date)) {
                 addUserForTravel(u);
                 break;
             }
-        }
+        }*/
 
     }
 

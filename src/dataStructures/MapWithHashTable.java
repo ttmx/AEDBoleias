@@ -78,7 +78,7 @@ public abstract class MapWithHashTable<K, V> implements Map<K, V>{
 
 	// Protected Instance Methods
 	
-	// Returns true iff the hash table cannot contain more entries.
+	// Returns true if the hash table cannot contain more entries.
 	protected boolean isFull( ){
 		return currentSize == maxSize;
 	}

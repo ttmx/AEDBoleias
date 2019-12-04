@@ -202,15 +202,14 @@ class Main {
         //Contador de passwords falhadas
         int failCount = 0;
         //Leitura do email
-        String email = in.next();
+        String email = in.nextLine().trim();
 
         if (app.hasEmail(email)) {
             System.out.println(USER_EXISTS);
         }
         else {
             System.out.print("nome (maximo 50 caracteres): ");
-            String name = in.next();
-            in.nextLine();
+            String name = in.nextLine();
             String password;
             while (failCount < 3) {
                 System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
@@ -439,7 +438,7 @@ class Main {
                     }
                 }else{
                     try {
-                        Iterator<String> users = app.usersWithTravelOnDate(listMode);
+                        Iterator<String> users = app.usersWithFreeTravelOnDate(listMode);
                         while (users.hasNext()) {
                             System.out.println(users.next() + "\n");
                         }

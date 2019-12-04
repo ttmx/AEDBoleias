@@ -4,6 +4,7 @@ import dataStructures.*;
 import exception.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class AppImp implements App {
 
@@ -163,13 +164,13 @@ public class AppImp implements App {
         if(travelUserEmail.equals(currentUser.email()))
             throw new SamePersonException(currentUser.name());
 
+        if(currentUser.hasTravelOnDate(date)||currentUser.hasRideOnDate(date))
+            throw new AlreadyHasRideOnDayException(currentUser.name());
         Travel travel = travelUser.getTravel(date);
-        currentUser.addRide(travel);
         travel.addUserForTravel(currentUser);
-
         if(travel.getNumOfUsersQueueHold()>0)
             throw new PlacedInQueueException(travel.getNumOfUsersQueueHold());
-
+        currentUser.addRide(travel);
     }
 
     @Override
@@ -238,14 +239,21 @@ public class AppImp implements App {
     }
 
     @Override
-    public Iterator<String> usersWithTravelOnDate(String dateStr) throws NoRideOnDateException,InvalidDateException{
+    public Iterator<String> usersWithFreeTravelOnDate(String dateStr) throws NoRideOnDateException,InvalidDateException{
         Date date = new BasicDate(dateStr);
         if(!date.isValid())
             throw new InvalidDateException();
         Map<String,Travel> trMap = travels.find(date);
         if(trMap==null)
             throw new NoRideOnDateException();
-        return trMap.keys();
+        List<String> users = new DoublyLinkedList<>();
+        Iterator<Travel> travs = trMap.values();
+        while (travs.hasNext()){
+            Travel t = travs.next();
+            if(t.getNumOfAvailableSeats()>0)
+                users.addLast(t.getTravelDriverEmail());
+        }
+        return users.iterator();
     }
 
     @Override
@@ -258,7 +266,6 @@ public class AppImp implements App {
             smallTravels = allMaps.next().values();
             while(smallTravels.hasNext()){
                 travel = smallTravels.next();
-                if(travel.getNumOfAvailableSeats()>0)
                     allStrings.addLast(travel.getDate().stringDate()+" "+travel.getTravelDriverEmail());
             }
         }
@@ -276,89 +283,5 @@ public class AppImp implements App {
             e.printStackTrace();
         }
     }
-
-
-
-    /*    private UserImp[] accounts;
-    private int personCount;
-    private Map<String, UserImp> users;
-    private UserImp currentUser;
-    private Map<String,Map<String, TravelImp>> itineraries;
-
-    public AppImp() {
-        accounts = new UserImp[0];
-        users = new HashMap<>();
-        personCount = 0;
-    }
-
-    public Boolean repeatedEmail(String emailToCheck) {
-        boolean isRepeated = false;
-        for (String s : users.keySet()) {
-            if (s.equals(emailToCheck)) {
-                isRepeated = true;
-                break;
-            }
-        }
-        return isRepeated;
-    }
-
-    public void createAccount(String email, String name, String password) {
-    	if(accounts.length -2 <= personCount) {
-    		accounts = increaseAccounts();
-    	}
-        users.put(email,new UserImp(email,name,password));
-        accounts[personCount] = new UserImp(email, name, password);
-        personCount++;
-    }
-
-    public UserImp getPersonFromEmail(String emailToCheck) {
-        UserImp lPerson = null;
-        for (int i = 0; i < personCount; i++) {
-            if (accounts[i].getEmail().equals(emailToCheck)) {
-                lPerson = accounts[i];
-            }
-        }
-
-        return lPerson;
-    }
-
-    private UserImp[] increaseAccounts() {
-        UserImp[] bigAccounts = new UserImp[accounts.length + 20];
-        for (int i = 0; i < personCount; i++) {
-            bigAccounts[i] = accounts[i];
-        }
-        return bigAccounts;
-    }
-
-    public int[] dateFromString(String sDate) {
-        int[] iaDate = new int[3];
-        String[] saDate = sDate.split("-");
-        for (int i = 0; i < 3; i++) {
-            iaDate[i] = Integer.parseInt(saDate[i].trim());
-        }
-        return iaDate;
-    }
-
-    public int getUserCount() {
-        return personCount;
-    }
-
-    public UserImp getPersonFromIndex(int index) {
-        return accounts[index];
-    }
-
-    public void sortAccounts() {
-        int len = personCount; 
-        for (int i=1; i<len; ++i) { 
-            UserImp key = accounts[i];
-            int j = i-1;
-            
-            while (j>=0 && accounts[j].getEmail().compareTo(key.getEmail()) > 0){
-                accounts[j+1] = accounts[j]; 
-                j = j-1; 
-            } 
-            accounts[j+1] = key; 
-        } 
-    }*/
 
 }

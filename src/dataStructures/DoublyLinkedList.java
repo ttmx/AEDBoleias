@@ -66,12 +66,26 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 	
 	@Override
 	public void addFirst(E element) {
-	//TODO
+		DListNode<E> dln = new DListNode(element,head,null);
+		if(currentSize==0){
+			tail = dln;
+		}else{
+			head.setNext(dln);
+		}
+		head = dln;
+		currentSize++;
 	}
 
 	@Override
 	public void addLast(E element) {
-	// TODO
+		DListNode<E> dln = new DListNode(element,tail,null);
+		if(currentSize==0){
+			head = dln;
+		}else{
+			tail.setNext(dln);
+		}
+		tail = dln;
+		currentSize++;
 	}
 	
 	@Override
@@ -91,7 +105,11 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 
 	private void addMiddle(int position, E element) {
 		DListNode<E> aux=getNode(position);
-		//TODO
+		DListNode<E> prev = aux.getPrevious();
+		DListNode<E> curr = new DListNode<>(element,prev,aux);
+		aux.setPrevious(curr);
+		prev.setNext(curr);
+		currentSize++;
 	}
 
 	private E removeMiddle(int position) {
