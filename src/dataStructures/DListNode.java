@@ -6,7 +6,7 @@ public class DListNode<E> {
 			// (Pointer to) the next node.
 			protected DListNode<E> next;
 			// (Pointer to) the previous node.
-			private DListNode<E> previous;
+			protected DListNode<E> previous;
 			
 			public DListNode( E elem, DListNode<E> thePrev, DListNode<E> theNext ){
 				element = elem;

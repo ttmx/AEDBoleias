@@ -23,7 +23,7 @@ public class AppImp implements App {
         users = new BST<String, User>(); // It's expected more than 10000 users
 
         //<Date,<User,Travel>>
-        travels = new SortedMapWithJavaClass<Date, SortedMap<String,Travel>>();
+        travels = new BST<Date, SortedMap<String,Travel>>();
     }
 
 

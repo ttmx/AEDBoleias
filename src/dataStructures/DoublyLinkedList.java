@@ -18,14 +18,12 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 
 	@Override
 	public boolean isEmpty() {
-		//TODO
-		return false;
+		return currentSize == 0;
 	}
 
 	@Override
 	public int size() {
-		//TODO
-		return 0;
+		return currentSize;
 	}
 	
 
@@ -66,11 +64,11 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 	
 	@Override
 	public void addFirst(E element) {
-		DListNode<E> dln = new DListNode(element,head,null);
+		DListNode<E> dln = new DListNode<>(element, head, null);
 		if(currentSize==0){
 			tail = dln;
 		}else{
-			head.setNext(dln);
+			head.setPrevious(dln);
 		}
 		head = dln;
 		currentSize++;
@@ -78,7 +76,7 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 
 	@Override
 	public void addLast(E element) {
-		DListNode<E> dln = new DListNode(element,tail,null);
+		DListNode<E> dln = new DListNode<>(element, tail, null);
 		if(currentSize==0){
 			head = dln;
 		}else{
@@ -99,12 +97,12 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 			else {
 				addMiddle(position,element);
 			}
-		
+		currentSize++;
 	}
 	
 
 	private void addMiddle(int position, E element) {
-		DListNode<E> aux=getNode(position);
+		DListNode<E> aux = getNode(position);
 		DListNode<E> prev = aux.getPrevious();
 		DListNode<E> curr = new DListNode<>(element,prev,aux);
 		aux.setPrevious(curr);
@@ -126,21 +124,22 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 	}
 	@Override
 	public E removeFirst() throws NoElementException {
-		if (currentSize==0) 
-			throw new NoElementException("No such element.");
-		// TODO
-		// Cuidado: lista com 1 elemento
-		return null;
+		if (currentSize == 0) throw new NoSuchElementException();
+		DListNode<E> toReturn = head;
+		head = head.next;
+		head.previous = null;
+		currentSize--;
+		return toReturn.element;
 	}
-
 
 	@Override
 	public E removeLast() throws NoElementException {
-		if (currentSize==0) 
-			throw new NoElementException("No such element.");
-		// TODO
-		// Cuidado: lista com 1 elemento
-		return null;
+		if (currentSize == 0) throw new NoSuchElementException();
+		DListNode<E> toReturn = tail;
+		tail = tail.previous;
+		tail.next = null;
+		currentSize--;
+		return toReturn.element;
 	}
 
 	@Override
