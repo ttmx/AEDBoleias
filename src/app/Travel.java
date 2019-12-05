@@ -17,7 +17,7 @@ public interface Travel extends Serializable {
     String getTime();
     int getDuration();
     int getNumOfAvailableSeats();
-    Iterator getRideUsers();
+    Iterator<User> getRideUsers();
     int getNumOfUsersQueueHold();
     void addUserForTravel(User user); // missing params | updated, but needs review
     void delUserFromTravel(User user) throws UserNotOnTravelException; // missing params

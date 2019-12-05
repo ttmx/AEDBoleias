@@ -75,20 +75,6 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		return res;
 	}
 
-	/*protected BSTNode<Entry<K,V>> findClosestNode(BSTNode<Entry<K,V>> n, K key) {
-		BSTNode<Entry<K,V>> res=null;
-		if (n.getLeft()!=null || n.getRight()!=null) {
-			int num = key.compareTo(n.getElement().getKey());
-			if (num==0)
-				res = n;
-			else if (num<0)
-				res=findNode(n.getLeft(),key);
-			else
-				res=findNode(n.getRight(),key);
-		}
-		return res;
-	}*/
-
 	@Override
 	public V find(K key) {
 		BSTNode<Entry<K,V>> res=findNode(root,key);
@@ -135,7 +121,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			return null;
 		V toReturn = toRemove.getElement().getValue();
 		BSTNode<Entry<K,V>> parent = toRemove.getParent();
-		boolean isLeft = toRemove.getElement().getKey().compareTo(parent.getElement().getKey()) < 0;
+		boolean isLeft = (parent != null) && toRemove.getElement().getKey().compareTo(parent.getElement().getKey()) < 0;
 
 		if(toRemove.left == null && toRemove.right==null){
 			if(toRemove == root)
@@ -146,19 +132,21 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 				parent.right = null;
 			}
 		} else if (toRemove.right == null) {
-			if (toRemove == root)
+			if (toRemove == root) {
 				root = toRemove.left;
-			else if(isLeft)
+			}else if(isLeft) {
 				parent.left = toRemove.left;
-			else
+			}else {
 				parent.right = toRemove.left;
+			}
 		} else if (toRemove.left == null){
-			if (toRemove == root)
+			if (toRemove == root) {
 				root = toRemove.right;
-			else if(isLeft)
+			}else if(isLeft) {
 				parent.left = toRemove.right;
-			else
+			}else{
 				parent.right = toRemove.right;
+			}
 		}else{
 			BSTNode<Entry<K,V>> maxOfMin = getMaxOfMin(toRemove);
 			if(toRemove == root)
@@ -169,7 +157,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 				parent.right = maxOfMin;
 			maxOfMin.right = toRemove.right;
 		}
-
+		currentSize--;
 		return toReturn;
 	}
 

@@ -1,6 +1,9 @@
 package app;
 
-import dataStructures.*;
+import dataStructures.BST;
+import dataStructures.Date;
+import dataStructures.Iterator;
+import dataStructures.Map;
 import exception.NoRideOnDateException;
 import exception.UserNotOnTravelException;
 
@@ -17,9 +20,8 @@ public class UserImp implements User {
         this.email= email;
         this.name = name;
         this.password = password;
-        // TODO: Change the expected value from the maps
-        travels = new SortedMapWithJavaClass<Date,Travel>();
-        rides = new SortedMapWithJavaClass<Date, Travel>();
+        travels = new BST<Date,Travel>();
+        rides = new BST<Date, Travel>();
     }
 
     @Override

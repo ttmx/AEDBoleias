@@ -24,7 +24,7 @@ public class TravelImp implements Travel {
         this.duration = duration;
         this.seatCap = seatCap;
         this.usersForTravel = new Array<User>();
-        this.usersInQueueForTravel = new QueueInArray<User>(); // ou QueueInList idk?
+        this.usersInQueueForTravel = new QueueInList<User>(); // ou QueueInList idk?
     }
 
     @Override
