@@ -23,8 +23,10 @@ public class TravelImp implements Travel {
         this.time = time;
         this.duration = duration;
         this.seatCap = seatCap;
-        this.usersForTravel = new Array<User>();
-        this.usersInQueueForTravel = new QueueInList<User>(); // ou QueueInList idk?
+        //SinglyLinkedList for no resizing and O(1) adding to end
+        this.usersForTravel = new SinglyLinkedList<User>();
+        //Queue in list for O(1)
+        this.usersInQueueForTravel = new QueueInList<User>();
     }
 
     @Override
@@ -88,14 +90,6 @@ public class TravelImp implements Travel {
         if(index==-1)
             throw new UserNotOnTravelException();
         usersForTravel.remove(index);
-        /*while(!usersInQueueForTravel.isEmpty()){
-            User u = usersInQueueForTravel.dequeue();
-            if(!u.hasTravelOnDate(date)&&!u.hasRideOnDate(date)) {
-                addUserForTravel(u);
-                break;
-            }
-        }*/
-
     }
 
     @Override

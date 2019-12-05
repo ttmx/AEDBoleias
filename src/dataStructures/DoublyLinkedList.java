@@ -37,9 +37,13 @@ public class DoublyLinkedList<E> implements TwoWayList<E>  {
 	@Override
 	public int find(E element) {
 		int pos=0;
-		DListNode<E> auxNo;
-		boolean found=false;
-		//TODO
+		DListNode<E> auxNo = head;
+		while(auxNo != null){
+			if(auxNo == element)
+				return pos;
+			auxNo = auxNo.getNext();
+			pos++;
+		}
 		return -1;
 	}
 	

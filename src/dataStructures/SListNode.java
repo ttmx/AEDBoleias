@@ -3,7 +3,9 @@
  */
 package dataStructures;
 
-class SListNode<E>{
+import java.io.Serializable;
+
+class SListNode<E> implements Serializable {
 	// Element stored in the node.
 			protected E element;
 			// (Pointer to) the next node.

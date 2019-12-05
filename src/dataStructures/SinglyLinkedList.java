@@ -30,16 +30,20 @@ public class SinglyLinkedList<E> implements List<E> {
 	@Override
 	public SinglyLLIterator<E> iterator() throws NoElementException {
 		if (currentSize==0) throw new NoElementException("List is empty.");
-		return new SinglyLLIterator<E>();
+		return new SinglyLLIterator<E>(head);
 	}
 
 
 	@Override
 	public int find(E element) {
 		int pos=0;
-		SListNode<E> auxNo;
-		boolean found=false;
-		//TODO
+		SListNode<E> auxNo = head;
+		while(auxNo != null){
+			if(auxNo.element.equals(element))
+				return pos;
+			auxNo = auxNo.getNext();
+			pos++;
+		}
 		return -1;
 	}
 
@@ -74,10 +78,9 @@ public class SinglyLinkedList<E> implements List<E> {
 
 	@Override
 	public void addLast(E element) {
-		SListNode<E> dln = new SListNode<E>(element,tail);
+		SListNode<E> dln = new SListNode<E>(element,null);
 		if(currentSize==0){
 			head = dln;
-			tail = dln;
 		}else{
 			tail.setNext(dln);
 		}
@@ -96,22 +99,24 @@ public class SinglyLinkedList<E> implements List<E> {
 		else {
 			addMiddle(position,element);
 		}
-		currentSize++;
 	}
 
-
+	//Not first node
 	private void addMiddle(int position, E element) {
 		SListNode<E> prev = getNode(position-1);
-		SListNode<E> next = getNode(position);
+		SListNode<E> next = prev.getNext();
 		SListNode<E> curr = new SListNode<E>(element,next);
 		prev.setNext(curr);
 		currentSize++;
 	}
 
 	private E removeMiddle(int position) {
-		SListNode<E> aux=getNode(position);
-		//TODO
-		return null;
+		SListNode<E> prevNode = getNode(position);
+		SListNode<E> toReturn = prevNode.getNext();
+		SListNode<E> nextNode = toReturn.getNext();
+		prevNode.setNext(nextNode);
+		currentSize--;
+		return toReturn.element;
 	}
 
 	private SListNode<E> getNode(int position){
@@ -131,7 +136,12 @@ public class SinglyLinkedList<E> implements List<E> {
 
 	@Override
 	public E removeLast() throws NoElementException {
-		return null;
+		SListNode<E> preLast = getNode(currentSize-1);
+		SListNode<E> toReturn = preLast.getNext();
+		preLast.setNext(null);
+		tail = preLast;
+		currentSize--;
+		return toReturn.element;
 	}
 
 

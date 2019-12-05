@@ -93,7 +93,7 @@ public class AppImp implements App {
         }
         Travel travel = new TravelImp(currentUser, origin, destination, date, time, travelDuration, availableSeats);
         if(travels.find(date)==null){
-            travels.insert(date, new SortedMapWithJavaClass<String, Travel>());
+            travels.insert(date, new BST<String, Travel>());
         }
 
         Map<String, Travel> travelsUserMap = travels.find(date);
@@ -248,7 +248,7 @@ public class AppImp implements App {
         Map<String,Travel> trMap = travels.find(date);
         if(trMap==null)
             throw new NoRideOnDateException();
-        List<String> users = new DoublyLinkedList<>();
+        List<String> users = new SinglyLinkedList<>();
         Iterator<Travel> travs = trMap.values();
         while (travs.hasNext()){
             Travel t = travs.next();

@@ -126,7 +126,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		if(toRemove.left == null && toRemove.right==null){
 			if(toRemove == root)
 				root = null;
-			if(isLeft){
+			else if(isLeft){
 				parent.left = null;
 			}else{
 				parent.right = null;
