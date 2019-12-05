@@ -123,10 +123,10 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		BSTNode<Entry<K,V>> parent = toRemove.getParent();
 		boolean isLeft = (parent != null) && toRemove.getElement().getKey().compareTo(parent.getElement().getKey()) < 0;
 
-		if(toRemove.left == null && toRemove.right==null){
-			if(toRemove == root)
+		if(!toRemove.isInternal()) {
+			if (toRemove == root){
 				root = null;
-			else if(isLeft){
+			}else if(isLeft){
 				parent.left = null;
 			}else{
 				parent.right = null;
@@ -139,6 +139,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			}else {
 				parent.right = toRemove.left;
 			}
+			toRemove.left.parent = parent;
 		} else if (toRemove.left == null){
 			if (toRemove == root) {
 				root = toRemove.right;
@@ -147,35 +148,25 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			}else{
 				parent.right = toRemove.right;
 			}
-		}else{
-			BSTNode<Entry<K,V>> maxOfMin = getMaxOfMin(toRemove);
+			toRemove.right.parent = parent;
+		}else if(toRemove.getRight()!=null && toRemove.getLeft()!=null){
+			BSTNode<Entry<K,V>> maxOfMin = maxNode(toRemove.parent.getLeft());
+			//remove(maxOfMin.getElement().getKey());
 			if(toRemove == root)
 				root = maxOfMin;
 			else if(isLeft)
 				parent.left = maxOfMin;
 			else
 				parent.right = maxOfMin;
-			maxOfMin.right = toRemove.right;
+			maxOfMin.parent = parent;
+			maxOfMin.left = toRemove.left;
+			if(maxOfMin.getLeft() !=null)
+				maxOfMin.getLeft().parent = maxOfMin;
+			if(maxOfMin.getRight() != null)
+				maxOfMin.getRight().parent = maxOfMin;
 		}
 		currentSize--;
 		return toReturn;
-	}
-
-	protected BSTNode<Entry<K,V>> getMaxOfMin(BSTNode<Entry<K,V>> toRemove) {
-		// mom = max of min
-		BSTNode<Entry<K,V>> mom =null;
-		BSTNode<Entry<K,V>> momParent =null;
-		BSTNode<Entry<K,V>> current = toRemove.left;
-		while(current!=null){
-			momParent = mom;
-			mom = current;
-			current = current.right;
-		}
-		if(mom!=toRemove.left){
-			momParent.right = mom.left;
-			mom.left = toRemove.left;
-		}
-		return mom;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class AdvancedBST <K extends Comparable<K>, V> extends BST<K,V>{
 	   * Performs a tri-node restructuring (a single or double rotation rooted at X node).
 	   * Assumes the nodes are in one of following configurations:
 	   *
-	   * @param X - root of the rotation
+	   * @param x - root of the rotation
 	   * <pre>
 	   *          z=c       z=c        z=a         z=a
 	   *         /  \      /  \       /  \        /  \

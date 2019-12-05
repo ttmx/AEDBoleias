@@ -17,8 +17,8 @@ public class AppImp implements App {
     private SortedMap<Date, SortedMap<String,Travel>> travels;
 
     public AppImp() {
-        // TODO: Change expected number of users from 0
         session = false;
+
         //<username,User>
         users = new BST<String, User>(); // It's expected more than 10000 users
 
