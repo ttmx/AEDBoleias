@@ -3,8 +3,9 @@ package app;
 import dataStructures.*;
 import exception.*;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class AppImp implements App {
 
@@ -18,7 +19,8 @@ public class AppImp implements App {
     public AppImp() {
         // TODO: Change expected number of users from 0
         session = false;
-        users = new MapWithJavaClass<String, User>(); // It's expected more than 10000 users
+        //<username,User>
+        users = new BST<String, User>(); // It's expected more than 10000 users
 
         //<Date,<User,Travel>>
         travels = new SortedMapWithJavaClass<Date, SortedMap<String,Travel>>();

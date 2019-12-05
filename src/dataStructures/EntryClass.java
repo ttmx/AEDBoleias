@@ -25,6 +25,10 @@ public class EntryClass<K, V> implements Entry<K, V>{
 	public V getValue() {
 		return value;
 	}
+
+	public void setValue(V value2) {
+		value=value2;
+	}
 	
 	
 

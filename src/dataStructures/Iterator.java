@@ -3,8 +3,6 @@
  */
 package dataStructures;
 
-import org.omg.PortableServer.ServantActivator;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +13,7 @@ public interface Iterator<E> extends Serializable {
 
 	// Returns true iff the iteration has more elements.
 	// In other words, returns true if next would return an element.
-	boolean hasNext();
+	boolean hasNext( );
 	 
 	// Returns the next element in the iteration.
 	// @throws NoSuchElementException if !hasNext()
