@@ -1,4 +1,4 @@
-package app;
+package app.exception;
 
 /**
  * @author Rodrigo Rosa

@@ -1,7 +1,7 @@
 package app;
 
 import dataStructures.*;
-import exception.*;
+import app.exception.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,10 +20,10 @@ public class AppImp implements App {
         session = false;
 
         //<username,User>
-        users = new BST<String, User>(); // It's expected more than 10000 users
+        users = new AVL<String, User>(); // It's expected more than 10000 users
 
         //<Date,<User,Travel>>
-        travels = new BST<Date, SortedMap<String,Travel>>();
+        travels = new AVL<Date, SortedMap<String,Travel>>();
     }
 
 

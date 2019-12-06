@@ -17,18 +17,57 @@ public class AdvancedBST <K extends Comparable<K>, V> extends BST<K,V>{
     protected void rotateLeft( BSTNode<Entry<K,V>> Y){
         //  a single rotation modifies a constant number of parent-child relationships, 
     	// it can be implemented in O(1)time
+
+		BSTNode<Entry<K,V>> Z = Y.parent;
+		BSTNode<Entry<K,V>> X = Y.right;
+		BSTNode<Entry<K,V>> xLeft = X.left;
+
+		X.parent = Z;
+		if(Z!=null && Z.right!= null && Z.right.equals(Y))
+			Z.right = X;
+		else if (Z!=null && Z.left!=null && Z.left.equals(Y))
+			Z.left = X;
+		Y.parent = X;
+
+		X.left = Y;
+		Y.right = xLeft;
+		if(xLeft!=null)
+			xLeft.parent = Y;
     }
     
     /**
-     * Performs a single right rotation rooted at Y node.
-     * Node X was a  left  child  of Y before the  rotation,  
-     * then Y becomes the right child of X after the rotation.
-     * @param Y - root of the rotation
-     * @pre: Y has a left child
+     * Performs a single right rotation rooted at z node.
+     * Node X was a  left  child  of z before the  rotation,
+     * then z becomes the right child of X after the rotation.
+     * @param z - root of the rotation
+     * @pre: z has a left child
+	 *     z          y
+	 *    / \        / \
+	 *   y   c      a   z
+	 *  / \            / \
+	 * a   b          b   c
+	 *
      */
-    protected void rotateRight( BSTNode<Entry<K,V>> Y){
+    protected void rotateRight( BSTNode<Entry<K,V>> z){
         //  a single rotation modifies a constant number of parent-child relationships, 
-    	// it can be implemented in O(1)time
+    	// it can be and was implemented in O(1)time
+
+		BSTNode<Entry<K,V>> zParent = z.parent;
+		BSTNode<Entry<K,V>> y = z.left;
+		BSTNode<Entry<K,V>> b = y.right;
+
+		y.parent = zParent;
+		if(zParent!=null && zParent.left!= null && zParent.left.equals(z))
+			zParent.left = y;
+		else if (zParent!=null && zParent.right!=null && zParent.right.equals(z))
+			zParent.right = y;
+		z.parent = y;
+
+		y.right = z;
+		z.left = b;
+		if(b!=null)
+			b.parent = z;
+
     }
     
 	    
@@ -49,14 +88,33 @@ public class AdvancedBST <K extends Comparable<K>, V> extends BST<K,V>{
 	   * @return the new root of the restructured subtree
 	   */
 	    protected BSTNode<Entry<K,V>> restructure (BSTNode<Entry<K,V>> x) {
-	    	// the modification of a tree T caused by a trinode restructuring operation
-	    	// can be implemented through case analysis either as a single rotation or as a double rotation.
-	    	// The double rotation arises when position x has the middle of the three relevant keys
-	    	// and is first rotated above its parent Y, and then above what was originally its grandparent Z. 
-	    	// In any of the cases, the trinode restructuring is completed with O(1)running time
-	    	//TODO
-	    	
-	    	return null;
-	    }
+			// the modification of a tree T caused by a trinode restructuring operation
+			// can be implemented through case analysis either as a single rotation or as a
+			// double rotation.
+			// The double rotation arises when position x has the middle of the three
+			// relevant keys
+			// and is first rotated above its parent Y, and then above what was originally
+			// its grandparent Z.
+			// In any of the cases, the trinode restructuring is completed with O(1)running
+			// time
+			BSTNode<Entry<K, V>> y = x.getParent();
+			BSTNode<Entry<K, V>> z = y.getParent();
+			if (y.getLeft() == x && z.getLeft() == y) {
+				rotateRight(z);
+				return y;
+			} else if (y.getLeft() == x && z.getRight() == y) {
+				rotateRight(y);
+				rotateLeft(z);
+				return x;
+			} else if (y.getRight() == x && z.getLeft() == y) {
+				rotateLeft(y);
+				rotateRight(z);
+				return x;
+			} else if (y.getRight() == x && z.getRight() == y) {
+				rotateLeft(z);
+				return y;
+			}
+			return null;
+		}
 	}
 

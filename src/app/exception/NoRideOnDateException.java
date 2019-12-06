@@ -1,4 +1,4 @@
-package exception;
+package app.exception;
 
 public class NoRideOnDateException extends Exception {
     public NoRideOnDateException(String name){

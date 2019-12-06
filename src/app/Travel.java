@@ -2,7 +2,7 @@ package app;
 
 import dataStructures.Date;
 import dataStructures.Iterator;
-import exception.UserNotOnTravelException;
+import app.exception.UserNotOnTravelException;
 
 import java.io.Serializable;
 

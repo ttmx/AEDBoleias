@@ -124,6 +124,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		boolean isLeft = (parent != null) && toRemove.getElement().getKey().compareTo(parent.getElement().getKey()) < 0;
 
 		if(!toRemove.isInternal()) {
+			//Its a leaf
 			if (toRemove == root){
 				root = null;
 			}else if(isLeft){
@@ -132,6 +133,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 				parent.right = null;
 			}
 		} else if (toRemove.right == null) {
+			//Only has left
 			if (toRemove == root) {
 				root = toRemove.left;
 			}else if(isLeft) {
@@ -141,6 +143,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			}
 			toRemove.left.parent = parent;
 		} else if (toRemove.left == null){
+			//Only has right
 			if (toRemove == root) {
 				root = toRemove.right;
 			}else if(isLeft) {
@@ -151,7 +154,6 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			toRemove.right.parent = parent;
 		}else if(toRemove.getRight()!=null && toRemove.getLeft()!=null){
 			BSTNode<Entry<K,V>> maxOfMin = maxNode(toRemove.parent.getLeft());
-			//remove(maxOfMin.getElement().getKey());
 			if(toRemove == root)
 				root = maxOfMin;
 			else if(isLeft)

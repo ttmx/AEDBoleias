@@ -1,11 +1,12 @@
 package app;
 
+import app.exception.AlreadyHasRideOnDayException;
 import dataStructures.BST;
 import dataStructures.Date;
 import dataStructures.Iterator;
 import dataStructures.Map;
-import exception.NoRideOnDateException;
-import exception.UserNotOnTravelException;
+import app.exception.NoRideOnDateException;
+import app.exception.UserNotOnTravelException;
 
 public class UserImp implements User {
 

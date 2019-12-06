@@ -1,7 +1,7 @@
-package app;
+package app.exception;
 
 public class AlreadyHasRideOnDayException extends Exception{
-    AlreadyHasRideOnDayException(String arg){
+    public AlreadyHasRideOnDayException(String arg){
         super(arg);
     }
 }

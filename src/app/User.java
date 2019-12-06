@@ -1,9 +1,10 @@
 package app;
 
+import app.exception.AlreadyHasRideOnDayException;
 import dataStructures.Date;
 import dataStructures.Iterator;
 import dataStructures.Map;
-import exception.NoRideOnDateException;
+import app.exception.NoRideOnDateException;
 
 import java.io.Serializable;
 

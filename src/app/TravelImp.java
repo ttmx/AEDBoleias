@@ -1,7 +1,7 @@
 package app;
 
 import dataStructures.*;
-import exception.UserNotOnTravelException;
+import app.exception.UserNotOnTravelException;
 
 public class TravelImp implements Travel {
     private User travelAuthor;

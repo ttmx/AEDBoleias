@@ -1,32 +1,18 @@
 /*
- * Project: FCT Boleias
+ * Project: AED Boleias
  * Description: Main project for Algorithms & Data Structures classes.
  * Version:
- * Copyright (C) 2019, Rodrigo Rosa <https://github.com/v0n3x> (Student ID: 56505)
- * Copyright (C) 2019, Tiago Teles <https://github.com/ttmx> (Student ID: 54953)
- * All rights reserved.
- */
-
-/*
- * Register - Working
- * Login - Working
- * Logout - Working
- * Help - Working (initial and session)
- * New Travels looks like its working and consultation too (missing emails list of riders tho)
- * Removing travels looks like it's working too.
- * List minhas parece funcionar mas está fora de ordem (fixable easily I think? we just use comparator i guess)
- * GetInfo - works too from what it looks (missing emails list of riders too)
  *
- * TODO:
- * Notes: We can't pass any future tests without serializable - SUPER IMPORTANT
+ * Tiago Teles <https://github.com/ttmx> (Student ID: 54953)
  *
+ * Colega que desistiu: Rodrigo Rosa <https://github.com/v0n3x> (Student ID: 56505)
  */
 
 import app.*;
 import dataStructures.BasicDate;
 import dataStructures.Date;
 import dataStructures.NoElementException;
-import exception.*;
+import app.exception.*;
 
 import java.util.Scanner;
 import dataStructures.Iterator;
@@ -93,11 +79,6 @@ class Main {
     public static void outSessionMenu(Scanner in, App app, String cmd) {
         // Enquanto o comando nao for termina
         while (!cmd.equals(EXIT)) {
-        	//Criacao do prompt
-            //System.out.print("> ");
-            //Leitura dos comandos
-            //lCmd = readCommand(scan);
-            //Processamento dos comandos
             switch (cmd) {
                 case HELP:
                     printOutSessionHelp();
@@ -134,13 +115,7 @@ class Main {
         String cmd = getCommand(in, app);
         //Enquanto que o comando nao for sai
         while (!cmd.equals(LOGOUT)) {
-        	//Criacao do prompt
-            //System.out.print(user.email() + " > ");
-            //cmd = readCommand(scan);
             switch (cmd) {
-                /*case LOGOUT:
-                    logout(app);
-                    break;*/
                 case HELP:
                     printOnSessionHelp();
                     break;
@@ -242,22 +217,7 @@ class Main {
      */
     private static boolean isPwValid(String pw) {
         boolean lIsValid = true;
-        /*boolean hasDigits = false;
-        boolean hasLetter = false;
-        //Verifica se cada caracter e um digito ou letra
-        //se algum dos caracteres for algo que nao um digito ou letra entao o metodo retorna falso
-        for (int i = 0; i < pw.length(); i++) {
-            if (!Character.isLetterOrDigit(pw.charAt(i))) {
-                //lIsValid = false;
-                return false;
-            }
-            if (!Character.isLetter(pw.charAt(i))) {
-
-            }
-        }*/
-        //if (!pw.matches("/[A-Za-z0-9]]+/g")) {
         if (!(pw.matches(".*[a-zA-Z].*") && pw.matches(".*[0-9].*"))) { // regex for alphanumerical with 1 or more matches required.
-        //if (!pw.matches("[0-9a-zA-Z]+")) {
             lIsValid = false;
         }
         return (pw.length() <= 6 && pw.length() >= 4 && lIsValid);
