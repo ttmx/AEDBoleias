@@ -63,7 +63,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			String l_result = "{ L ";
 			l_result += (this.left == null)? "null": this.left.toString();
 			l_result = " < E";
-			l_result += (this.E == null)? "null": this.E.toString();
+			l_result += (this.getElement() == null)? "null": this.getElement().toString();
 			l_result = " > R ";
 			l_result += (this.right == null)? "null": this.right.toString();
 			l_result = " }";
