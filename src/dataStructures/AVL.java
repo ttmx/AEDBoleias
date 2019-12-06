@@ -1,8 +1,15 @@
 package dataStructures;
 
-
+/**
+ * This class implements a self balancing Binary Search Tree(BST), an AVL Tree
+ * @author Tiago Teles
+ */
 public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements SortedMap<K,V>{
 
+	/**
+	 * This class implements and AVL node of the AVL Tree
+	 * @param <E> The type of the element on each node
+	 */
 	static class AVLNode<E> extends BSTNode<E> {
 		// Height of the node
 		protected int height;
@@ -16,27 +23,45 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			super(element, parent,left, right);
 			height= 1 + Math.max(getHeight((AVLNode<E>)left),getHeight((AVLNode<E>)right));
 		}
-
+		/**  
+			Obtains the height of the AVLNode given as parameters
+			@param no The node for which we're searching it's height.
+			@return the height this AVL, 0 when null.
+		*/
 		protected int getHeight(AVLNode<E> no) {
 			if (no==null)
 				return 0;
 			return no.getHeight();
 		}
-
+		/**  
+			Obtains the height of this AVLNode
+			@return the height this AVL
+		*/
 		public int getHeight() {
 			return height;
 		}
-
+		/**
+		 * Check if this node is balanced
+		 * @return true if the left and right nodes differ at most 1 on their respective heights, false otherwise
+		 */
 		public boolean isBalance() {
 			int dif= getHeight((AVLNode<E>)left)-getHeight((AVLNode<E>)right);
 			return dif==0 ||dif==-1 ||dif ==1;
 		}
-
+		/**
+		 * Resets the height of the node based on the height it's branches. 
+		 * It set the node height to the max height of both nodes added by 1.
+		 * @return the new calculate height
+		 */
 		public int setHeight() {
 			height= 1 + Math.max(getHeight((AVLNode<E>)left),getHeight((AVLNode<E>)right));
 			return height;
 		}
 	}
+	/**
+	 * Create a new AVL tree with n as it's root node
+	 * @param n the node that will become the root node
+	 */
 	protected AVL(AVLNode<Entry<K,V>> n) {
 		root=n;
 	}
@@ -44,7 +69,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 		this(null);
 	}
 	/**
-	 * Return a child of p with greater height
+	 * @return a child of p with greater height
 	 */
 	protected AVLNode<Entry<K,V>> tallerChild(AVLNode<Entry<K,V>> top)  {
 		if(top.left!=null && top.right!=null)
@@ -56,6 +81,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 	 * zPos to the root. For each node encountered, we recompute its height
 	 * and perform a trinode restructuring if it's unbalanced.
 	 * the rebalance is completed with O(log n)running time
+	 * @param zPos the starting node from which the rebalancing will occur upwards
 	 */
 	protected void rebalance(AVLNode<Entry<K,V>> zPos) {
 		if(zPos.isInternal())

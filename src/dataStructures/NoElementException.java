@@ -4,7 +4,7 @@
 package dataStructures;
 
 /**
- * @author fernanda
+ * @author Tiago Teles
  *
  */
 public class NoElementException extends RuntimeException {

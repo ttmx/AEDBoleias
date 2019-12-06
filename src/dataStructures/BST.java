@@ -1,8 +1,21 @@
 package dataStructures;
 
 import java.io.Serializable;
-
+/**
+ * This class implements a Binary Search Tree.
+ * 
+ * @param <K> Comparable key type
+ * @param <V> Element type to store
+ * @author Tiago Teles
+ */
 public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
+
+	/**
+	 * This class implements the nodes of a Binary Search Tree. 
+	 * It keeps track of it's parent, left and right nodes,
+	 * along it the content of the node.
+	 * @param <E> Type of elements that the node stores
+	 */
 	 static class BSTNode<E> implements Serializable {
 		
 		protected BSTNode<E> parent;
@@ -41,7 +54,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		
 	}
 
-	//The root
+	//The root of the tree
 	protected BSTNode<Entry<K,V>> root;
 		
 	//Number of elements
@@ -74,7 +87,7 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		}
 		return res;
 	}
-
+	
 	@Override
 	public V find(K key) {
 		BSTNode<Entry<K,V>> res=findNode(root,key);
@@ -114,8 +127,12 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 			}
 		}
 	}
-	@Override
-	public V remove(K key) {
+	/**	
+	 * Remove from the tree the element with K key. 
+	 * If the key is not found it's left unchanged.
+	 * @return null if it didn't find the node, the node removed if it found the node with the K key
+	 */
+	@Override public V remove(K key) {
 		BSTNode<Entry<K,V>> toRemove = findNode(root,key);
 		if(toRemove==null)
 			return null;
@@ -171,12 +188,18 @@ public class BST<K extends Comparable<K>,V> implements SortedMap<K,V> {
 		return toReturn;
 	}
 
-	@Override
+	@Override 
 	public Entry<K, V> minEntry() throws NoElementException {
 		if(this.isEmpty())
 			throw new NoElementException();
 		return this.minNode(root).getElement();
 	}
+	/**
+	 * Returns the maxNode to the left of node
+	 * @to-check is this really what you want ?
+	 * @param node the node for which we want to determine the max
+	 * @return the maxnode to the left of node.
+	 */
 	protected BSTNode<Entry<K,V>> minNode( BSTNode<Entry<K,V>> node ){
 		if ( node.getLeft() == null )
 			return node;

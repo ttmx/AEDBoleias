@@ -6,7 +6,9 @@ package dataStructures;
 import java.io.Serializable;
 
 /**
- * @author fernanda
+ * Definition of the Entry interface, with K being 
+ * the Key for the element and V the value stored
+ * @author Tiago Teles
  *
  */
 public interface Entry<K, V> extends Serializable {
