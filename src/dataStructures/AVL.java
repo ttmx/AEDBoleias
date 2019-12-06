@@ -57,6 +57,8 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			height= 1 + Math.max(getHeight((AVLNode<E>)left),getHeight((AVLNode<E>)right));
 			return height;
 		}
+
+
 	}
 	/**
 	 * Create a new AVL tree with n as it's root node
