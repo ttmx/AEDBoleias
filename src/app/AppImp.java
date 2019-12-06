@@ -93,7 +93,7 @@ public class AppImp implements App {
         }
         Travel travel = new TravelImp(currentUser, origin, destination, date, time, travelDuration, availableSeats);
         if(travels.find(date)==null){
-            travels.insert(date, new BST<String, Travel>());
+            travels.insert(date, new AVL<String, Travel>());
         }
 
         Map<String, Travel> travelsUserMap = travels.find(date);

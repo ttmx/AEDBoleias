@@ -1,10 +1,7 @@
 package app;
 
 import app.exception.AlreadyHasRideOnDayException;
-import dataStructures.BST;
-import dataStructures.Date;
-import dataStructures.Iterator;
-import dataStructures.Map;
+import dataStructures.*;
 import app.exception.NoRideOnDateException;
 import app.exception.UserNotOnTravelException;
 
@@ -21,7 +18,7 @@ public class UserImp implements User {
         this.email= email;
         this.name = name;
         this.password = password;
-        travels = new BST<Date,Travel>();
+        travels = new AVL<Date,Travel>();
         rides = new BST<Date, Travel>();
     }
 
