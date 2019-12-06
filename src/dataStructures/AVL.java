@@ -58,19 +58,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			return height;
 		}
 
-		public String toString()
-		{  
-			String l_result = "{ L ";
-			l_result += (this.left == null)? "null": this.left.toString();
-			l_result = " < E";
-			l_result += (this.getElement() == null)? "null": this.getElement().toString();
-			l_result = " > R ";
-			l_result += (this.right == null)? "null": this.right.toString();
-			l_result = " }";
 
-			return l_result;
-
-		}
 	}
 	/**
 	 * Create a new AVL tree with n as it's root node
