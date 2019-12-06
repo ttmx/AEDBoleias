@@ -19,7 +19,7 @@ public class UserImp implements User {
         this.name = name;
         this.password = password;
         travels = new AVL<Date,Travel>();
-        rides = new BST<Date, Travel>();
+        rides = new AVL<Date, Travel>();
     }
 
     @Override

@@ -190,6 +190,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			}
 			toRemove.right.parent = parent;
 		}else if(toRemove.getRight()!=null && toRemove.getLeft()!=null){
+
 			BSTNode<Entry<K,V>> maxOfMin = maxNode(toRemove.getLeft());
 			if(toRemove == root)
 				root = maxOfMin;
@@ -198,6 +199,7 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			else
 				parent.right = maxOfMin;
 
+			toRemove.left.parent = maxOfMin;
 			if(toRemove.left.equals(maxOfMin)){
 				maxOfMin.parent = parent;
 			}else{
@@ -206,9 +208,9 @@ public class AVL <K extends Comparable<K>,V> extends AdvancedBST<K,V> implements
 			}
 			maxOfMin.parent = parent;
 
-			if(maxOfMin.getLeft() !=null) {
-				maxOfMin.getLeft().parent = maxOfMin.parent;
-			}
+			maxOfMin.right = toRemove.right;
+			toRemove.right.parent = maxOfMin;
+
 		}
 		currentSize--;
 		AVLNode<Entry<K,V>> node=(AVLNode<Entry<K,V>>) toRemove.parent; // father of node where the key was
