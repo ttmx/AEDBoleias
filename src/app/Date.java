@@ -1,4 +1,4 @@
-package dataStructures;
+package app;
 
 import java.io.Serializable;
 

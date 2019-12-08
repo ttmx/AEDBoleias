@@ -9,8 +9,8 @@
  */
 
 import app.*;
-import dataStructures.BasicDate;
-import dataStructures.Date;
+import app.BasicDate;
+import app.Date;
 import dataStructures.NoElementException;
 import app.exception.*;
 
@@ -19,7 +19,7 @@ import dataStructures.Iterator;
 
 class Main {
 
-	// Commands
+    // Commands
     private static final String HELP = "AJUDA";
     private static final String EXIT = "TERMINA";
     private static final String REGISTER = "REGISTA";
@@ -60,6 +60,28 @@ class Main {
     private static final String NEW_TRAVEL_ERR2 = "%s ja tem uma deslocacao ou boleia registada nesta data.\n";
     private static final String NEW_RIDE_SUCCESS = "Boleia registada.";
     private static final String MOV_NOT_EXIST = "Deslocacao nao existe.";
+    public static final String CANT_RIDE_SELF = " nao pode dar boleia a si proprio.";
+    public static final String USER_NOT_EXIST2 = "Utilizador inexistente.";
+    public static final String INVALID_DATE = "Data invalida.";
+    public static final String WAITING_LIST_POS = "Ficou na fila de espera (posicao ";
+    public static final String ALREADY_RIDE_ON_DAY = " ja registou uma boleia ou deslocacao nesta data.";
+    public static final String REMOVED_RIDE = " boleia retirada.";
+    public static final String NO_RIDES = "Sem boleias registadas.";
+    public static final String TRAVELS = "Boleias: ";
+    public static final String NAME_MAX_CHAR = "nome (maximo 50 caracteres): ";
+    public static final String PASS_CRITERIA = "password (entre 4 e 6 caracteres - digitos e letras): ";
+    public static final String NO_REGISTED_RIDE_ON_DAY = " nesta data nao tem registo de boleia.";
+    public static final String MINE = "MINHAS";
+    public static final String ALL = "TODAS";
+    public static final String RIDES = "BOLEIAS";
+    public static final String USER_GIVEN_NOT_EXIST = "Nao existe o utilizador dado.";
+    public static final String NO_TRAVELS = "Sem deslocacoes.";
+    public static final String EMPTY_SEATS = "Lugares vagos:";
+    public static final String IN_QUEUE = "Em espera:";
+    public static final String RIDE_REMOVED = "Deslocacao removida.";
+    public static final String NO_RIDE_ON_THIS_DATE = "%s nesta data nao tem registo de deslocacao.\n";
+    public static final String HAS_RIDERS_ON_TRAVEL = "%s ja nao pode eliminar esta deslocacao.\n";
+    public static final String PASSWORD = "password: ";
 
 
     public static void main(String[] args) {
@@ -183,11 +205,11 @@ class Main {
             System.out.println(USER_EXISTS);
         }
         else {
-            System.out.print("nome (maximo 50 caracteres): ");
+            System.out.print(NAME_MAX_CHAR);
             String name = in.nextLine();
             String password;
             while (failCount < 3) {
-                System.out.print("password (entre 4 e 6 caracteres - digitos e letras): ");
+                System.out.print(PASS_CRITERIA);
                 password = in.next();
                 in.nextLine();
                 //se password for valida
@@ -241,7 +263,7 @@ class Main {
         }
         else {
             while (failCount < 3) {
-                System.out.print("password: ");
+                System.out.print(PASSWORD);
                 password = in.next();
                 in.nextLine();
                 if (app.matchesPw(email, password)) {
@@ -292,17 +314,17 @@ class Main {
             app.addRide(travelOwnerEmail, date);
             System.out.println(NEW_RIDE_SUCCESS);
         } catch (InvalidDateException e) {
-            System.out.println("Data invalida.");
+            System.out.println(INVALID_DATE);
         }catch(UserIsNullException e){
-            System.out.println("Utilizador inexistente.");
+            System.out.println(USER_NOT_EXIST2);
         }catch(NoRideOnDateException e){
             System.out.println(MOV_NOT_EXIST);
         }catch(SamePersonException e){
-            System.out.println(e.getMessage() + " nao pode dar boleia a si proprio.");
+            System.out.println(e.getMessage() + CANT_RIDE_SELF);
         }catch(PlacedInQueueException e){
-            System.out.println("Ficou na fila de espera (posicao "+ e.getMessage() +").");
+            System.out.println(WAITING_LIST_POS + e.getMessage() +").");
         } catch (AlreadyHasRideOnDayException e) {
-            System.out.println(e.getMessage() + " ja registou uma boleia ou deslocacao nesta data.");
+            System.out.println(e.getMessage() + ALREADY_RIDE_ON_DAY);
         }
     }
 
@@ -310,11 +332,11 @@ class Main {
         Date date = new BasicDate(in.next().trim());
         try {
             app.delRide(date);
-            System.out.println(app.getCurrentUserName()+" boleia retirada.");
+            System.out.println(app.getCurrentUserName()+ REMOVED_RIDE);
         } catch (InvalidDateException e) {
-            System.out.println("Data invalida.");
+            System.out.println(INVALID_DATE);
         } catch (NoRideOnDateException e) {
-            System.out.println(e.getMessage()+" nesta data nao tem registo de boleia.");
+            System.out.println(e.getMessage()+ NO_REGISTED_RIDE_ON_DAY);
         }
     }
 
@@ -328,9 +350,9 @@ class Main {
            printTravel(travel);
 
        } catch (InvalidUserException e) {
-           System.out.println("Utilizador inexistente.");
+           System.out.println(USER_NOT_EXIST2);
        } catch (InvalidDateException e) {
-           System.out.println("Data invalida.");
+           System.out.println(INVALID_DATE);
        } catch (InvalidTravelException e) {
            System.out.println(MOV_NOT_EXIST);
        }
@@ -339,54 +361,33 @@ class Main {
     private static String userListToString(Travel travel){
         try{
             Iterator<User> userIt = travel.getRideUsers();
-            String str = "Boleias: ";
+            String str = TRAVELS;
             while (userIt.hasNext()){
                 str += userIt.next().email()+(userIt.hasNext()?"; ":"");
             }
             return str;
         }catch (NoElementException e){
-            return "Sem boleias registadas.";
+            return NO_RIDES;
         }
     }
 
 
     private static void listing(Scanner in, App app) {
-        /*String lDate = scan.nextLine().trim();
-
-        int[] laDate;
-        if (!lDate.equals("")) {
-            laDate = app.dateFromString(lDate);
-            listRidesWDate(laDate, app,personObj);
-        } else {
-            RideIterator lIterator = personObj.createRideIterator();
-            app.sortAccounts();
-            lIterator.sort();
-            if (lIterator.hasNext()) {
-                do {
-                    Itinerary lRide = lIterator.nextRide();
-                    printRideInfo(lRide, personObj, false, false);
-                    System.out.print("\n");
-                } while (lIterator.hasNext());
-            }else{
-                System.out.println(personObj.name()+" nao tem deslocacoes registadas.");
-            }
-        }*/
-
         String username = in.next().trim();
         String listMode = username.toUpperCase();
         in.nextLine();
         switch(listMode.toUpperCase()){
             //
-            case "MINHAS":
+            case MINE:
                 listTravels(app.getUserTravels());
                 break;
-            case "TODAS":
+            case ALL:
                 Iterator<String> allTravels = app.allRideMinInfo();
                 while(allTravels.hasNext()){
                     System.out.println(allTravels.next()+"\n");
                 }
                 break;
-            case "BOLEIAS":
+            case RIDES:
                 listSelfRides(app.getUserRides());
                 break;
             default:
@@ -394,7 +395,7 @@ class Main {
                     try{
                         listSelfRides(app.getUserTravels(username));
                     }catch(UserIsNullException e) {
-                        System.out.println("Nao existe o utilizador dado.");
+                        System.out.println(USER_GIVEN_NOT_EXIST);
                     }
                 }else{
                     try {
@@ -403,9 +404,9 @@ class Main {
                             System.out.println(users.next() + "\n");
                         }
                     }catch (NoRideOnDateException e){
-                        System.out.println("Sem deslocacoes.");
+                        System.out.println(NO_TRAVELS);
                     }catch (InvalidDateException e){
-                        System.out.println("Data invalida.");
+                        System.out.println(INVALID_DATE);
                     }
                 }
                 break;
@@ -413,7 +414,7 @@ class Main {
     }
     private static void listTravels(Iterator<Travel> travels){
         if(!travels.hasNext()){
-            System.out.println("Sem deslocacoes.");
+            System.out.println(NO_TRAVELS);
         }
         while (travels.hasNext()) {
             Travel travel = travels.next();
@@ -425,13 +426,13 @@ class Main {
         System.out.printf("%s\n" + //email
                 "%s-%s\n" + //origin-destination
                 "%s %s %d\n" + // date hour duration
-                "Lugares vagos: %d\n" + // available seats
+                EMPTY_SEATS +" %d\n" + // available seats
                 "%s\n" +
-                "Em espera: %d\n", travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate().stringDate(), intifyTime(travel.getTime()), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel), travel.getNumOfUsersQueueHold());
+                IN_QUEUE +" %d\n", travel.getTravelDriverEmail(), travel.getOrigin(), travel.getDestination(), travel.getDate().stringDate(), intifyTime(travel.getTime()), travel.getDuration(), travel.getNumOfAvailableSeats(), userListToString(travel), travel.getNumOfUsersQueueHold());
     }
     private static void listSelfRides(Iterator<Travel> rides){
         if(!rides.hasNext()){
-            System.out.println("Sem deslocacoes.");
+            System.out.println(NO_TRAVELS);
         }
         while (rides.hasNext()) {
             Travel travel = rides.next();
@@ -455,13 +456,13 @@ class Main {
 
         try {
             app.delTravel(date);
-            System.out.println("Deslocacao removida.");
+            System.out.println(RIDE_REMOVED);
         } catch (InvalidDateException e) {
-            System.out.println("Data invalida.");
+            System.out.println(INVALID_DATE);
         } catch (InvalidTravelException e) {
-            System.out.printf("%s nesta data nao tem registo de deslocacao.\n", app.getCurrentUserName());
+            System.out.printf(NO_RIDE_ON_THIS_DATE, app.getCurrentUserName());
         } catch (HasRidesException e) {
-            System.out.printf("%s ja nao pode eliminar esta deslocacao.\n", app.getCurrentUserName());
+            System.out.printf(HAS_RIDERS_ON_TRAVEL, app.getCurrentUserName());
         }
 
     }

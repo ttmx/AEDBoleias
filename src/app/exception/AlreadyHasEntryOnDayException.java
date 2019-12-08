@@ -1,7 +1,7 @@
 package app.exception;
 
 /**
- * @author Rodrigo Rosa
+ * @author Tiago Teles 54953
  */
 public class AlreadyHasEntryOnDayException extends Exception {
     public AlreadyHasEntryOnDayException() {

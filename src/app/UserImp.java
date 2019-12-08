@@ -98,16 +98,6 @@ public class UserImp implements User {
     }
 
     @Override
-    public Map<String, Travel> travelMap() {
-        return null;
-    }
-
-    @Override
-    public Map<String, Travel> rideMap() {
-        return null;
-    }
-
-    @Override
     public boolean hasTravelOnDate(Date date) {
         return travels.find(date) != null;
     }

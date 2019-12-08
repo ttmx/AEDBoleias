@@ -1,7 +1,7 @@
 package app.exception;
 
 /**
- * @author Rodrigo Rosa
+ * @author Tiago Teles
  */
 public class InvalidTravelException extends Exception {
     public InvalidTravelException() {

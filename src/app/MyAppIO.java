@@ -3,7 +3,7 @@ package app;
 import java.io.*;
 
 /**
- * @author Rodrigo Rosa
+ * @author Tiago Teles 54953
  */
 public class MyAppIO {
     private App app;

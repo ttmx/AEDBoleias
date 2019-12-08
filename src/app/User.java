@@ -1,32 +1,43 @@
 package app;
 
 import app.exception.AlreadyHasRideOnDayException;
-import dataStructures.Date;
 import dataStructures.Iterator;
-import dataStructures.Map;
 import app.exception.NoRideOnDateException;
 
 import java.io.Serializable;
 
 /**
- * @author Rodrigo Rosa and Tiago Teles
+ * @author Tiago Teles
  */
 public interface User extends Serializable{
+    //O(1)
     String name();
+    //O(1)
     String email();
+    //O(1)
     String password();
+    //O(1)
     int loginNumber();
+    //O(1)
     int numberOfTravels();
+    //O(1)
     Iterator<Travel> travels();
+    //O(1)
     Iterator<Travel> rides();
-    Map<String,Travel> travelMap();
-    Map<String,Travel> rideMap();
+    //O(1)
     void incLoginNum();
-    void addTravel(Travel travel); // Missing parameters
-    void delTravel(Date date); // Missing parameters
+    //O(log(size))
+    void addTravel(Travel travel);
+    //O(log(size))
+    void delTravel(Date date);
+    //O(log(size))
     Travel getTravel(Date date);
-    void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException; // Missing parameters
-    void delRide(Date date) throws NoRideOnDateException; // Missing parameters
+    //O(log(size))
+    void addRide(Travel travelToRide) throws AlreadyHasRideOnDayException;
+    //O(log(size))
+    void delRide(Date date) throws NoRideOnDateException;
+    //O(log(size))
     boolean hasTravelOnDate(Date date);
+    //O(log(size))
     boolean hasRideOnDate(Date date);
 }

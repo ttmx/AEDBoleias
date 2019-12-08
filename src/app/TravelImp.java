@@ -1,5 +1,6 @@
 package app;
 
+import app.exception.AlreadyHasRideOnDayException;
 import dataStructures.*;
 import app.exception.UserNotOnTravelException;
 
@@ -74,7 +75,6 @@ public class TravelImp implements Travel {
         return usersInQueueForTravel.size();
     }
 
-    // Some review and needs throw.
     @Override
     public void addUserForTravel(User user) {
         if (usersForTravel.size() >= seatCap) {
@@ -87,9 +87,25 @@ public class TravelImp implements Travel {
     @Override
     public void delUserFromTravel(User user) throws UserNotOnTravelException{
         int index = usersForTravel.find(user);
+        boolean found = false;
         if(index==-1)
             throw new UserNotOnTravelException();
         usersForTravel.remove(index);
+        if(getNumOfAvailableSeats() > 0 && usersInQueueForTravel.size()>0){
+            User toAdd = usersInQueueForTravel.dequeue();
+            while((toAdd.hasRideOnDate(date)||toAdd.hasTravelOnDate(date))&&usersInQueueForTravel.size()>0){
+                if(!(toAdd.hasTravelOnDate(date)||toAdd.hasRideOnDate(date))){
+                    found = true;
+                }
+                toAdd = usersInQueueForTravel.dequeue();
+            }
+            usersForTravel.addLast(toAdd);
+            if(found) try {
+                toAdd.addRide(this);
+            } catch (AlreadyHasRideOnDayException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

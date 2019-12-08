@@ -193,33 +193,13 @@ public class AppImp implements App {
         if (!users.find(travelUserEmail).hasTravelOnDate(date)) {
             throw new InvalidTravelException();
         }
-         /*
-        travels.find(date).find(travelUserEmail); iria buscar a deslocacao em causa
-        */
+
         return users.find(travelUserEmail).getTravel(date);
     }
 
     @Override
     public boolean hasEmail(String email) {
         return users.find(email) != null;
-    }
-
-    @Override
-    public User getUserWithPass(String email, String pass) throws WrongPasswordException {
-        User user = users.find(email);
-        if(!user.password().equals(pass))
-            throw new WrongPasswordException();
-        return user;
-    }
-
-    @Override
-    public Iterator<Travel> getAppRegisteredTravels() {
-        return null;
-    }
-
-    @Override
-    public Iterator<Travel> getAppRegisteredTravelsOnDate(Date date) {
-        return null;
     }
 
     @Override
